@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DFlix Movies</title>
+  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+    }
+
+    .header {
+      background: #111;
+      padding: 16px;
+      text-align: center;
+      font-size: 2em;
+    }
+
+    .section {
+      padding: 10px 16px;
+    }
+
+    .section h2 {
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+
+    .movie-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding-bottom: 10px;
+      scroll-behavior: smooth;
+    }
+
+    .movie {
+      min-width: 140px;
+      flex: 0 0 auto;
+      background: #222;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .movie:hover,
+    .movie:focus {
+      background: #333;
+      cursor: pointer;
+      transform: scale(1.05); /* Slight zoom effect */
+    }
+
+    .movie img {
+      width: 100%;
+      height: 250px; /* Adjusted height */
+      object-fit: cover; /* Ensures the image fits within the container without distortion */
+    }
+
+    .movie-title {
+      padding: 6px;
+      font-size: 0.9em;
+    }
+
+    .more-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      font-weight: bold;
+      color: #00f0ff;
+    }
+
+    .more-card:hover {
+      background: #222;
+    }
+
+    @media (min-width: 600px) {
+      .movie {
+        min-width: 180px;
+      }
+    }
+
+    /* Scrollbar hidden for cleaner look */
+    .movie-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .movie-row {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">DFlix Movies</div>
+
+  <div class="section">
+    <h2>Hollywood</h2>
+    <div class="movie-row" id="hollywoodRow"></div>
+  </div>
+
+  <div class="section">
+    <h2>Bollywood</h2>
+    <div class="movie-row" id="bollywoodRow"></div>
+  </div>
+
+  <div class="section">
+    <h2>Web Series</h2>
+    <div class="movie-row" id="webseriesRow"></div>
+  </div>
+
+  <script>
+    const hollywoodMovies = [
+      {
+        name: "Iron Man",
+        link: "https://v2.sdsp.xyz/embed/movie/1726",
+        poster: "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg"
+      },
+      {
+        name: "Endgame",
+        link: "https://v2.sdsp.xyz/embed/movie/299534",
+        poster: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg"
+      },
+      {
+        name: "No Way Home",
+        link: "https://v2.sdsp.xyz/embed/movie/634649",
+        poster: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+      },
+      {
+        name: "More...",
+        link: "hollywood/index.html",
+        poster: "",
+        more: true
+      }
+    ];
+
+    const bollywoodMovies = [
+    {
+    "name": "Bloody Daddy (2023)",
+    "link": "https://v2.sdsp.xyz/embed/movie/1014390",
+    "poster": "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/jWixIxyLdY0AXyxr0QTzwnIYiNb.jpg"
+  },
+  {
+    "name": "Dhoom 3 (2013)",
+    "link": "https://v2.sdsp.xyz/embed/movie/44977",
+    "poster": "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/rUVTM5EQUQ2I0fcfE46AkvBYWae.jpg"
+  },
+  {
+    "name": "Tiger 3 (2023)",
+    "link": "https://v2.sdsp.xyz/embed/movie/720557",
+    "poster": "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/fjzpptTwFoIduPrAUGmlqxaLKhm.jpg"
+  },
+      {
+        name: "More...",
+        link: "bollywood/index.html",
+        poster: "",
+        more: true
+      }
+    ];
+
+    const webSeries = [
+      {
+        name: "Mirzapur",
+        link: "#",
+        poster: "https://via.placeholder.com/180x270?text=Mirzapur"
+      },
+      {
+        name: "Farzi",
+        link: "#",
+        poster: "https://via.placeholder.com/180x270?text=Farzi"
+      },
+      {
+        name: "More...",
+        link: "#webseries-more",
+        poster: "",
+        more: true
+      }
+    ];
+
+    function populateMovies(movies, containerId) {
+      const container = document.getElementById(containerId);
+      movies.forEach(movie => {
+        const div = document.createElement("div");
+        div.className = "movie";
+        div.tabIndex = 0; // Makes the movie focusable (for remote navigation)
+        div.onclick = () => {
+          if (movie.link) window.location.href = movie.link;
+        };
+
+        if (movie.more) {
+          div.classList.add("more-card");
+          div.innerHTML = movie.name;
+        } else {
+          div.innerHTML = `
+            <img src="${movie.poster}" alt="${movie.name} Poster">
+            <div class="movie-title">${movie.name}</div>
+          `;
+        }
+
+        container.appendChild(div);
+      });
+    }
+
+    // Populate movies
+    populateMovies(hollywoodMovies, "hollywoodRow");
+    populateMovies(bollywoodMovies, "bollywoodRow");
+    populateMovies(webSeries, "webseriesRow");
+
+    // Focus the first movie on page load
+    window.onload = () => {
+      const firstMovie = document.querySelector(".movie");
+      if (firstMovie) firstMovie.focus();
+    };
+  </script>
+</body>
+</html>

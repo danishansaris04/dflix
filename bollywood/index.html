@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DFlix Movies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+    }
+
+    .header {
+      background: #111;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    #searchBar {
+      display: none;
+      padding: 10px 16px;
+      background: #111;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    .movie-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .movie {
+      background: #222;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      width: 140px;
+      transition: transform 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .movie img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+    }
+
+    .movie-title {
+      padding: 8px;
+      font-size: 0.9em;
+    }
+
+    .movie:hover,
+    .movie:focus {
+      background: #333;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    @media (min-width: 768px) {
+      .movie {
+        width: 180px;
+      }
+      .movie img {
+        height: 270px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .movie-container {
+        overflow-x: auto;
+        flex-wrap: wrap;
+        padding: 10px;
+      }
+
+      .movie {
+        flex: 0 0 auto;
+      }
+
+      .movie-container::-webkit-scrollbar {
+        display: none;
+      }
+      .movie-container {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    DFlix Movies
+    <div class="search-icon" onclick="toggleSearch()">🔍</div>
+    </div>
+
+  <div id="searchBar">
+    <input type="text" id="searchInput" placeholder="Search movie..." oninput="filterMovies()" />
+  </div>
+
+  <div class="movie-container" id="movieContainer"></div>
+<script src="danish.js"></script>
+  <script>
+    
+    const container = document.getElementById("movieContainer");
+
+    function displayMovies(list) {
+      container.innerHTML = '';
+      list.forEach(movie => {
+        const div = document.createElement("div");
+        div.className = "movie";
+        div.tabIndex = 0;
+        div.onclick = () => window.location.href = movie.link;
+
+        const img = document.createElement("img");
+        img.src = movie.poster;
+        img.alt = movie.name;
+
+        const title = document.createElement("div");
+        title.className = "movie-title";
+        title.textContent = movie.name;
+
+        div.appendChild(img);
+        div.appendChild(title);
+        container.appendChild(div);
+      });
+    }
+
+    function toggleSearch() {
+      const bar = document.getElementById("searchBar");
+      bar.style.display = bar.style.display === "block" ? "none" : "block";
+      if (bar.style.display === "block") {
+        document.getElementById("searchInput").focus();
+      } else {
+        displayMovies(movies);
+      }
+    }
+
+    function filterMovies() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = movies.filter(movie => movie.name.toLowerCase().includes(keyword));
+      displayMovies(filtered);
+    }
+
+    window.onload = () => {
+      displayMovies(movies);
+      const first = document.querySelector(".movie");
+      if (first) first.focus();
+    };
+  </script>
+</body>
+</html>
