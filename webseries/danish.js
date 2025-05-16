@@ -10,7 +10,7 @@ const movies = [
   {
     name: "Attack on Titan",
     poster: "https://m.media-amazon.com/images/M/MV5BMjIyMzU3NzY5MV5BMl5BanBnXkFtZTgwODAxNjUyNzM@._V1_.jpg"
-}
+  }
 ];
 
 const seriesData = {
@@ -89,9 +89,7 @@ const seriesData = {
         ]
       }
     ]
-  }
-};
-
+  },
 
   "Attack on Titan": {
     imdb_id: "tt2560140",
@@ -239,5 +237,4 @@ const seriesData = {
       }
     ]
   }
-]
 };
