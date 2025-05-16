@@ -1,11 +1,11 @@
 const movies = [
   {
     name: "Farzi",
-    poster: "https://m.imdb.com/title/tt15477488/mediaviewer/rm3904519169/?ref_=tt_ov_i"
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/xslXoDf49hqtDf91wOep3IyPR1X.jpg"
   },
   {
     name: "Mirzapur",
-    poster: "https://m.imdb.com/title/tt6473300/mediaviewer/rm3373062913/?ref_=tt_ov_i"
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/p0qM8hhlMF5DuxHBzl2EZR6TehX.jpg"
   }
 ];
 
