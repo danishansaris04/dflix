@@ -17,7 +17,7 @@ const movies = [
   },
   {
   name: "All of Us Are Dead",
-  poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/hnjTYE6kWio1UGp3L5YcKGMzGbj.jpg"
+  poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/pTEFqAjLd5YTsMD6NSUxV6Dq7A6.jpg"
   }
 ];
 
