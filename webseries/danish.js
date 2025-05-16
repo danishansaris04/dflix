@@ -6,7 +6,7 @@ const movies = [
   {
     name: "Mirzapur",
     poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/p0qM8hhlMF5DuxHBzl2EZR6TehX.jpg"
-  }
+  },
   {
     name: "Attack on Titan",
     poster: "https://m.media-amazon.com/images/M/MV5BMjIyMzU3NzY5MV5BMl5BanBnXkFtZTgwODAxNjUyNzM@._V1_.jpg"
