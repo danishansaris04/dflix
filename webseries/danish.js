@@ -21,7 +21,7 @@ const movies = [
   },
     {
     name: "The Boys",
-    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/mrv5B8wKw7kT3ZgWZC1KZ8J1wod.jpg"
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/2zmTngn1tYC1AvfnrFLhxeD82hz.jpg"
     }
 ];
 
