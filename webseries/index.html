@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DFlix Movies</title>
+  <title>DFlix Web Series</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     body {
@@ -171,12 +171,12 @@
 </head>
 <body>
   <div class="header">
-    DFlix Movies
+    DFlix Web Series
     <div class="search-icon" onclick="toggleSearch()">🔍</div>
   </div>
 
   <div id="searchBar">
-    <input type="text" id="searchInput" placeholder="Search movie..." oninput="filterMovies()" />
+    <input type="text" id="searchInput" placeholder="Search series..." oninput="filterMovies()" />
   </div>
 
   <div class="movie-container" id="movieContainer"></div>
@@ -190,9 +190,42 @@
       <div id="popupEpisodes"></div>
     </div>
   </div>
-<script src="danish.js"></script>
+
   <script>
-  const container = document.getElementById("movieContainer");
+    const movies = [
+      {
+        name: "Farzi",
+        poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/uTUU8DCyyp4aK6z3GmYjFiqUfSY.jpg"
+      }
+    ];
+
+    const seriesData = {
+      "Farzi": {
+        imdb_id: "tt15477488",
+        seasons: [
+          {
+            number: 1,
+            title: "Season 1",
+            episodes: [
+              { name: "Episode 1", ep: 1 },
+              { name: "Episode 2", ep: 2 },
+              { name: "Episode 3", ep: 3 },
+              { name: "Episode 4", ep: 4 }
+            ]
+          },
+          {
+            number: 2,
+            title: "Season 2",
+            episodes: [
+              { name: "Episode 1", ep: 1 },
+              { name: "Episode 2", ep: 2 }
+            ]
+          }
+        ]
+      }
+    };
+
+    const container = document.getElementById("movieContainer");
 
     function displayMovies(list) {
       container.innerHTML = '';
@@ -201,11 +234,7 @@
         div.className = "movie";
         div.tabIndex = 0;
         div.onclick = () => {
-          if (seriesData[movie.name]) {
-            openPopup(movie.name);
-          } else {
-            window.location.href = movie.link;
-          }
+          openPopup(movie.name);
         };
 
         const img = document.createElement("img");
@@ -273,7 +302,7 @@
         epBtn.textContent = episode.name;
         epBtn.onclick = () => {
           const url = `https://vidapi.xyz/embed/tv/${imdb_id}&s=${seasonNumber}&e=${episode.ep}`;
-          window.location.href = url;
+          window.open(url, "_blank");
         };
         container.appendChild(epBtn);
       });
@@ -285,9 +314,7 @@
 
     window.onload = () => {
       displayMovies(movies);
-      const first = document.querySelector(".movie");
-      if (first) first.focus();
     };
-    </script>
+  </script>
 </body>
 </html>
