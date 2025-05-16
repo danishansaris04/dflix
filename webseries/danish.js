@@ -34,7 +34,7 @@
         name: "Mirzapur",
         poster: "https://m.imdb.com/title/tt6473300/mediaviewer/rm3373062913/?ref_=tt_ov_i"
       }
-    ];
+    
 
     const seriesData = {
       "Mirzapur": {
