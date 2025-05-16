@@ -18,7 +18,11 @@ const movies = [
   {
   name: "All of Us Are Dead",
   poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/pTEFqAjLd5YTsMD6NSUxV6Dq7A6.jpg"
-  }
+  },
+    {
+    name: "The Boys",
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/mrv5B8wKw7kT3ZgWZC1KZ8J1wod.jpg"
+    }
 ];
 
 const seriesData = {
@@ -340,5 +344,66 @@ const seriesData = {
       ]
     }
   ]
- }
+ },
+  "The Boys": {
+    imdb_id: "tt1190634",
+    seasons: [
+      {
+        number: 1,
+        title: "Season 1",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 }
+        ]
+      },
+      {
+        number: 2,
+        title: "Season 2",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 }
+        ]
+      },
+      {
+        number: 3,
+        title: "Season 3",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 }
+        ]
+      },
+      {
+        number: 4,
+        title: "Season 4",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 }
+        ]
+      }
+    ]
+  }
 };
