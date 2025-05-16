@@ -240,7 +240,8 @@ const seriesData = {
       ]
     }
   ]
-} "Stranger Things": {
+},
+  "Stranger Things": {
     imdb_id: "tt4574334",
     seasons: [
       {
