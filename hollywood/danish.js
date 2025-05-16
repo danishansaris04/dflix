@@ -56,7 +56,7 @@ const movies = [
   },
   {
     name: "Ant-Man",
-    link: "https://v2.sdsp.xyz/embed/movie/102899",
+    link: "https://iplayerhls.com/e/0j8oucee8zym",
     poster: "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/rQRnQfUl3kfp78nCWq8Ks04vnq1.jpg"
   },
   {
@@ -106,7 +106,7 @@ const movies = [
   },
   {
     name: "Avengers: Endgame",
-    link: "https://v2.sdsp.xyz/embed/movie/299534",
+    link: "https://cybervynx.com/e/cau5xegyo0vl",
     poster: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg"
   },
   {
