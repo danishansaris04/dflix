@@ -239,4 +239,5 @@ const seriesData = {
       }
     ]
   }
+]
 };
