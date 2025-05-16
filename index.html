@@ -171,7 +171,10 @@
     <h2>Web Series</h2>
     <div class="movie-row" id="webseriesRow"></div>
   </div>
-
+<div class="section">
+    <h2>Animation</h2>
+    <div class="movie-row" id="animation"></div>
+</div>
   <!-- Popup -->
   <div id="popupOverlay">
     <div id="popupBox">
@@ -248,6 +251,29 @@
         more: true
       }
     ];
+    const animation = [
+      {
+        name: "Bloody Daddy (2023)",
+        link: "https://v2.sdsp.xyz/embed/movie/1014390",
+        poster: "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/jWixIxyLdY0AXyxr0QTzwnIYiNb.jpg"
+      },
+      {
+        name: "Dhoom 3 (2013)",
+        link: "https://vidapi.xyz/embed/movie/tt27501039",
+        poster: "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/rUVTM5EQUQ2I0fcfE46AkvBYWae.jpg"
+      },
+      {
+        name: "Tiger 3 (2023)",
+        link: "https://v2.sdsp.xyz/embed/movie/720557",
+        poster: "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/fjzpptTwFoIduPrAUGmlqxaLKhm.jpg"
+      },
+      {
+        name: "More...",
+        link: "bollywood/index.html",
+        poster: "",
+        more: true
+      }
+    ];
 
     function populateMovies(movies, containerId, isWebSeries = false) {
       const container = document.getElementById(containerId);
@@ -297,6 +323,7 @@
     populateMovies(hollywoodMovies, "hollywoodRow");
     populateMovies(bollywoodMovies, "bollywoodRow");
     populateMovies(webSeries, "webseriesRow", true);
+    populateMovies(animation, "animation");
 
     // Focus first movie on load for keyboard navigation
     window.onload = () => {
