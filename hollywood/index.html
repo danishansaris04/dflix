@@ -147,7 +147,12 @@ DFlix Movies
         const div = document.createElement("div");
         div.className = "movie";
         div.tabIndex = 0;
-        div.onclick = () => window.location.href = movie.link;
+
+        div.onclick = () => {
+          const encodedName = encodeURIComponent(movie.name);
+          const url = movie.link || `https://player4u.xyz/embed?key=${encodedName}`;
+          window.location.href = url;
+        };
 
         const img = document.createElement("img");
         img.src = movie.poster;
@@ -157,7 +162,7 @@ DFlix Movies
         title.className = "movie-title";
         title.textContent = movie.name;
 
-        div.appendChild(img);
+        
         div.appendChild(title);
         container.appendChild(div);
       });
@@ -169,6 +174,7 @@ DFlix Movies
       if (bar.style.display === "block") {
         document.getElementById("searchInput").focus();
       } else {
+        document.getElementById("searchInput").value = "";
         displayMovies(movies);
       }
     }
