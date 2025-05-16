@@ -68,7 +68,7 @@
               { name: "Episode 7", ep: 7 },
               { name: "Episode 8", ep: 8 },
               { name: "Episode 9", ep: 9 },
-              { name: "Episode 10", ep: 10 },
+              { name: "Episode 10", ep: 10 }
             ]
           },
          {
