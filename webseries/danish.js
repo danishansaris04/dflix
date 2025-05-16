@@ -3,6 +3,11 @@
         name: "Farzi",
         poster: "https://m.imdb.com/title/tt15477488/mediaviewer/rm3904519169/?ref_=tt_ov_i"
       }
+        
+{
+        name: "Mirzapur",
+        poster: "https://m.imdb.com/title/tt6473300/mediaviewer/rm3373062913/?ref_=tt_ov_i"
+}
     ];
 
     const seriesData = {
@@ -30,10 +35,6 @@
         ]
       }
     };
-{
-        name: "Mirzapur",
-        poster: "https://m.imdb.com/title/tt6473300/mediaviewer/rm3373062913/?ref_=tt_ov_i"
-      }
     
 
     const seriesData = {
