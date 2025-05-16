@@ -179,5 +179,61 @@ const movies = [
     "name": "Karan Arjun (1995)",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
   },
+    {
+    "name": "Judwaa (1997)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Tere Naam (2003)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Wanted (2009)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Dabangg (2010)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Ek Tha Tiger (2012)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Bajrangi Bhaijaan (2015)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Sultan (2016)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Tiger Zinda Hai (2017)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Race 3 (2018)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Bharat (2019)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Radhe (2021)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Antim: The Final Truth (2021)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Kisi Ka Bhai Kisi Ki Jaan (2023)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Tiger 3 (2023)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  }
  
 ]
