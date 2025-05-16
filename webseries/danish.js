@@ -22,7 +22,6 @@ const movies = [
 ];
 
 const seriesData = {
-  "Farzi": {
 "Farzi": {
   imdb_id: "tt15477488",
   seasons: [
