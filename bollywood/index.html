@@ -122,53 +122,7 @@
 
   <div class="movie-container" id="movieContainer"></div>
 <script src="danish.js"></script>
-  <script>
-    
-    const container = document.getElementById("movieContainer");
-
-    function displayMovies(list) {
-      container.innerHTML = '';
-      list.forEach(movie => {
-        const div = document.createElement("div");
-        div.className = "movie";
-        div.tabIndex = 0;
-        div.onclick = () => window.location.href = movie.link;
-
-        const img = document.createElement("img");
-        img.src = movie.poster;
-        img.alt = movie.name;
-
-        const title = document.createElement("div");
-        title.className = "movie-title";
-        title.textContent = movie.name;
-
-        div.appendChild(img);
-        div.appendChild(title);
-        container.appendChild(div);
-      });
-    }
-
-    function toggleSearch() {
-      const bar = document.getElementById("searchBar");
-      bar.style.display = bar.style.display === "block" ? "none" : "block";
-      if (bar.style.display === "block") {
-        document.getElementById("searchInput").focus();
-      } else {
-        displayMovies(movies);
-      }
-    }
-
-    function filterMovies() {
-      const keyword = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = movies.filter(movie => movie.name.toLowerCase().includes(keyword));
-      displayMovies(filtered);
-    }
-
-    window.onload = () => {
-      displayMovies(movies);
-      const first = document.querySelector(".movie");
-      if (first) first.focus();
-    };
-  </script>
+  <script src="https://raw.githubusercontent.com/danishansaris04/dflix/refs/heads/main/main/main.js"></script>
+  
 </body>
 </html>
