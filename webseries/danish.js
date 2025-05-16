@@ -91,11 +91,13 @@ const seriesData = {
     ]
   }
 };
+
+
   "Attack on Titan": {
     imdb_id: "tt2560140",
     seasons: [
       {
-        season: 1,
+        number: 1,
         title: "Season 1",
         episodes: [
           { name: "Episode 1", number: 1 },
@@ -126,7 +128,7 @@ const seriesData = {
         ]
       },
       {
-        season: 2,
+        number: 2,
         title: "Season 2",
         episodes: [
           { name: "Episode 1", number: 1 },
@@ -144,7 +146,7 @@ const seriesData = {
         ]
       },
       {
-        season: 3,
+        number: 3,
         title: "Season 3 Part 1",
         episodes: [
           { name: "Episode 1", number: 1 },
@@ -162,7 +164,7 @@ const seriesData = {
         ]
       },
       {
-        season: 3,
+        number: 3,
         title: "Season 3 Part 2",
         episodes: [
           { name: "Episode 13", number: 13 },
@@ -178,7 +180,7 @@ const seriesData = {
         ]
       },
       {
-        season: 4,
+        number: 4,
         title: "Season 4 Part 1",
         episodes: [
           { name: "Episode 1", number: 1 },
@@ -200,7 +202,7 @@ const seriesData = {
         ]
       },
       {
-        season: 4,
+        number: 4,
         title: "Season 4 Part 2",
         episodes: [
           { name: "Episode 17", number: 17 },
@@ -218,7 +220,7 @@ const seriesData = {
         ]
       },
       {
-        season: 4,
+        number: 4,
         title: "Season 4 Part 3 Specials",
         episodes: [
           { name: "Episode 29", number: 29 },
@@ -226,7 +228,7 @@ const seriesData = {
         ]
       },
       {
-        season: 4,
+        number: 4,
         title: "Season 4 Part 4 Specials",
         episodes: [
           { name: "Episode 31", number: 31 },
