@@ -162,24 +162,95 @@
       }
     ];
 
-    const webSeries = [
+    const movies = [
+  {
+    name: "Farzi",
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/xslXoDf49hqtDf91wOep3IyPR1X.jpg"
+  },
+  {
+    name: "Mirzapur",
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/p0qM8hhlMF5DuxHBzl2EZR6TehX.jpg"
+  }
+];
+
+const seriesData = {
+  "Farzi": {
+    imdb_id: "tt15477488",
+    seasons: [
       {
-        name: "Mirzapur",
-        link: "#",
-        poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/p0qM8hhlMF5DuxHBzl2EZR6TehX.jpg"
+        number: 1,
+        title: "Season 1",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 }
+        ]
       },
       {
-        name: "Farzi",
-        link: "#",
-        poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/xslXoDf49hqtDf91wOep3IyPR1X.jpg"
-      },
-      {
-        name: "More...",
-        link: "webseries/index.html",
-        poster: "",
-        more: true
+        number: 2,
+        title: "Season 2",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 }
+        ]
       }
-    ];
+    ]
+  },
+
+  "Mirzapur": {
+    imdb_id: "tt6473300",
+    seasons: [
+      {
+        number: 1,
+        title: "Season 1",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 },
+          { name: "Episode 9", ep: 9 }
+        ]
+      },
+      {
+        number: 2,
+        title: "Season 2",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 },
+          { name: "Episode 9", ep: 9 },
+          { name: "Episode 10", ep: 10 }
+        ]
+      },
+      {
+        number: 3,
+        title: "Season 3",
+        episodes: [
+          { name: "Episode 1", ep: 1 },
+          { name: "Episode 2", ep: 2 },
+          { name: "Episode 3", ep: 3 },
+          { name: "Episode 4", ep: 4 },
+          { name: "Episode 5", ep: 5 },
+          { name: "Episode 6", ep: 6 },
+          { name: "Episode 7", ep: 7 },
+          { name: "Episode 8", ep: 8 },
+          { name: "Episode 9", ep: 9 },
+          { name: "Episode 10", ep: 10 }
+        ]
+      }
+    ]
+  }
+};
 
     function populateMovies(movies, containerId) {
       const container = document.getElementById(containerId);
@@ -214,6 +285,100 @@
     window.onload = () => {
       const firstMovie = document.querySelector(".movie");
       if (firstMovie) firstMovie.focus();
+    };
+  </script>
+  <script>
+    
+
+    const container = document.getElementById("movieContainer");
+
+    function displayMovies(list) {
+      container.innerHTML = '';
+      list.forEach(movie => {
+        const div = document.createElement("div");
+        div.className = "movie";
+        div.tabIndex = 0;
+        div.onclick = () => {
+          openPopup(movie.name);
+        };
+
+        const img = document.createElement("img");
+        img.src = movie.poster;
+        img.alt = movie.name;
+
+        const title = document.createElement("div");
+        title.className = "movie-title";
+        title.textContent = movie.name;
+
+        div.appendChild(img);
+        div.appendChild(title);
+        container.appendChild(div);
+      });
+    }
+
+    function toggleSearch() {
+      const bar = document.getElementById("searchBar");
+      bar.style.display = bar.style.display === "block" ? "none" : "block";
+      if (bar.style.display === "block") {
+        document.getElementById("searchInput").focus();
+      } else {
+        displayMovies(movies);
+      }
+    }
+
+    function filterMovies() {
+      const keyword = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = movies.filter(movie => movie.name.toLowerCase().includes(keyword));
+      displayMovies(filtered);
+    }
+
+    function openPopup(seriesName) {
+      const data = seriesData[seriesName];
+      if (!data) return;
+
+      document.getElementById("popupOverlay").style.display = "flex";
+      document.getElementById("popupTitle").textContent = seriesName;
+
+      const seasonContainer = document.getElementById("popupSeasons");
+      const episodeContainer = document.getElementById("popupEpisodes");
+      seasonContainer.innerHTML = '';
+      episodeContainer.innerHTML = '';
+
+      data.seasons.forEach((season, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = season.title;
+        btn.onclick = () => loadEpisodes(data.imdb_id, season.number, season.episodes);
+        seasonContainer.appendChild(btn);
+
+        if (i === 0) loadEpisodes(data.imdb_id, season.number, season.episodes);
+      });
+    }
+
+    function loadEpisodes(imdb_id, seasonNumber, episodes) {
+      const container = document.getElementById("popupEpisodes");
+      container.innerHTML = '';
+
+      const title = document.createElement("h3");
+      title.textContent = `Season ${seasonNumber}`;
+      container.appendChild(title);
+
+      episodes.forEach(episode => {
+        const epBtn = document.createElement("div");
+        epBtn.textContent = episode.name;
+        epBtn.onclick = () => {
+          const url = `https://vidapi.xyz/embed/tv/${imdb_id}&s=${seasonNumber}&e=${episode.ep}`;
+          window.open(url, "_blank");
+        };
+        container.appendChild(epBtn);
+      });
+    }
+
+    document.getElementById("popupClose").onclick = () => {
+      document.getElementById("popupOverlay").style.display = "none";
+    };
+
+    window.onload = () => {
+      displayMovies(movies);
     };
   </script>
 </body>
