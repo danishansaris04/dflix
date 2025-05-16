@@ -167,6 +167,17 @@ const movies = [
     "poster": "https://media.themoviedb.org/t/p/w300_and_h450_bestv2/krMI3hRmlgKcuNc3XBWtl8APasR.jpg"
   },
 
-
+  {
+    "name": "Maine Pyar Kiya (1989)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTYxOTYxNjY3MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Hum Aapke Hain Koun..! (1994)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTYxOTYxNjY3MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
+  {
+    "name": "Karan Arjun (1995)",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1NzYxNzY2MF5BMl5BanBnXkFtZTgwNzY3NzE3MDE@._V1_.jpg"
+  },
  
 ]
