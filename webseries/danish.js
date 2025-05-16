@@ -14,6 +14,10 @@ const movies = [
   {
     name: "Stranger Things",
     poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg"
+  },
+  {
+  name: "All of Us Are Dead",
+  poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/hnjTYE6kWio1UGp3L5YcKGMzGbj.jpg"
   }
 ];
 
@@ -317,5 +321,28 @@ const seriesData = {
         ]
       }
     ]
-      }
+  },
+  "All of Us Are Dead": {
+  imdb_id: "tt14169960",
+  seasons: [
+    {
+      number: 1,
+      title: "Season 1",
+      episodes: [
+        { name: "Episode 1", ep: 1 },
+        { name: "Episode 2", ep: 2 },
+        { name: "Episode 3", ep: 3 },
+        { name: "Episode 4", ep: 4 },
+        { name: "Episode 5", ep: 5 },
+        { name: "Episode 6", ep: 6 },
+        { name: "Episode 7", ep: 7 },
+        { name: "Episode 8", ep: 8 },
+        { name: "Episode 9", ep: 9 },
+        { name: "Episode 10", ep: 10 },
+        { name: "Episode 11", ep: 11 },
+        { name: "Episode 12", ep: 12 }
+      ]
+    }
+  ]
+ }
 };
