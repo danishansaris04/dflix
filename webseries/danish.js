@@ -9,7 +9,7 @@ const movies = [
   },
   {
     name: "Attack on Titan",
-    poster: "https://m.media-amazon.com/images/M/MV5BMjIyMzU3NzY5MV5BMl5BanBnXkFtZTgwODAxNjUyNzM@._V1_.jpg"
+    poster: "https://media.themoviedb.org/t/p/w220_and_h330_face/m4DzoiXUHRBTJjkZwayRYf05NXB.jpg"
   }
 ];
 
