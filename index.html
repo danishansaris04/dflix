@@ -16,7 +16,7 @@
 
     body {
       background-color: var(--bg-dark); color: var(--text-main); font-family: 'Outfit', sans-serif;
-      padding-bottom: 100px; transition: 0.3s; overflow-x: hidden;
+      padding-bottom: 100px; transition: 0.3s; overflow-x: hidden; margin: 0;
     }
 
     /* Navbar Fixed */
@@ -29,7 +29,7 @@
 
     /* Universal Search Bar */
     .search-container { 
-      padding: 10px 5%; position: fixed; top: 65px; width: 100%; z-index: 4500; 
+      padding: 10px 5%; position: fixed; top: 60px; width: 100%; z-index: 4500; 
       background: var(--bg-dark); transition: 0.3s;
     }
     .search-wrapper { position: relative; width: 100%; }
@@ -39,13 +39,13 @@
       padding: 12px 20px 12px 50px; border-radius: 50px; color: var(--text-main); outline: none;
     }
 
-    /* Main Content Area Padding */
+    /* Main Content Area */
     .main-wrapper { margin-top: 155px; }
 
     /* Trending Banner */
     .trending-box { padding: 0 5%; margin-bottom: 25px; }
     .t-slider {
-      width: 100%; height: 120px; border-radius: 20px;
+      width: 100%; height: 140px; border-radius: 20px;
       background: linear-gradient(135deg, var(--secondary), #440099);
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 10px 20px rgba(0,0,0,0.4); text-align: center;
@@ -58,10 +58,15 @@
     .m-card {
       position: relative; background: var(--card-bg); border-radius: 15px; overflow: hidden;
       transition: 0.3s ease; animation: fadeInUp 0.5s ease forwards; opacity: 0; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     .m-card img { width: 100%; height: 210px; object-fit: cover; }
-    .m-content { position: absolute; bottom: 0; width: 100%; padding: 10px; background: linear-gradient(transparent, #000); font-size: 0.8rem; font-weight: 600; }
+    .m-content { 
+        position: absolute; bottom: 0; width: 100%; padding: 15px 10px 8px; 
+        background: linear-gradient(transparent, rgba(0,0,0,0.9)); 
+        font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
     /* Navigation */
     .bottom-nav {
@@ -73,7 +78,7 @@
     }
     .nav-item { color: #666; text-decoration: none; text-align: center; flex: 1; transition: 0.3s; cursor: pointer; }
     .nav-item.active { color: var(--primary); transform: translateY(-3px); }
-    .nav-item span { display: block; font-size: 0.65rem; font-weight: bold; }
+    .nav-item span { display: block; font-size: 0.65rem; font-weight: bold; margin-top: 2px; }
 
     /* Overlays */
     .full-overlay {
@@ -84,7 +89,7 @@
     .history-card { display: flex; gap: 15px; background: var(--card-bg); padding: 10px; border-radius: 12px; margin-bottom: 10px; align-items: center; cursor: pointer;}
     .history-card img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
 
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; margin-top: 10px; }
     .see-all { color: var(--primary); font-size: 0.7rem; cursor: pointer; border: 1px solid var(--primary); padding: 2px 10px; border-radius: 5px; }
 
     @media (max-width: 500px) { .movie-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -95,14 +100,14 @@
   <nav class="navbar navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="javascript:void(0)" onclick="showHome()">D-FLIX</a>
-      <i class="fa-solid fa-circle-user fa-2x text-secondary" onclick="toggleSettings()"></i>
+      <i class="fa-solid fa-circle-user fa-2x text-secondary" onclick="toggleSettings()" style="cursor:pointer"></i>
     </div>
   </nav>
 
   <div class="search-container" id="searchArea">
       <div class="search-wrapper">
           <i class="fa-solid fa-search"></i>
-          <input type="text" id="globalSearch" placeholder="Search your library...">
+          <input type="text" id="globalSearch" placeholder="Search movies or series...">
       </div>
   </div>
 
@@ -110,12 +115,16 @@
     <div id="homePage">
         <div class="trending-box">
             <div class="t-slider">
-                <h5 class="fw-bold mb-0">STREAMING YOUR FAVORITES</h5>
+                <div>
+                    <h5 class="fw-bold mb-1">WELCOME TO D-FLIX</h5>
+                    <p class="small opacity-75 mb-0">Premium Entertainment</p>
+                </div>
             </div>
         </div>
+
         <div class="movie-container">
             <div id="sec-Hollywood" style="display:none">
-                <div class="section-header"><span>Hollywood Hits</span><span class="see-all" onclick="filterType('Hollywood')">SEE ALL</span></div>
+                <div class="section-header"><span>Latest Movies</span><span class="see-all" onclick="filterType('Hollywood', 'All Movies')">SEE ALL</span></div>
                 <div class="movie-grid" id="gridHomeHollywood"></div>
             </div>
             
@@ -143,24 +152,26 @@
   <div id="settingsOverlay" class="full-overlay" style="z-index: 6000; padding-top: 100px;">
       <h2 class="fw-bold mb-4">My Account</h2>
       <div class="history-card" onclick="showHistory()">
-          <i class="fa-solid fa-history text-primary"></i> Watch History <i class="fa-solid fa-chevron-right ms-auto"></i>
+          <i class="fa-solid fa-history text-primary"></i> <span class="ms-2">Watch History</span> <i class="fa-solid fa-chevron-right ms-auto"></i>
       </div>
       <div class="history-card">
-          <i class="fa-solid fa-moon text-primary"></i> Dark Mode 
-          <div class="form-check form-switch ms-auto"><input class="form-check-input" type="checkbox" checked onchange="document.body.classList.toggle('light-mode')"></div>
+          <i class="fa-solid fa-moon text-primary"></i> <span class="ms-2">Dark Mode</span>
+          <div class="form-check form-switch ms-auto">
+              <input class="form-check-input" type="checkbox" checked onchange="document.body.classList.toggle('light-mode')">
+          </div>
       </div>
       <button class="btn btn-primary w-100 mt-5 rounded-pill" onclick="showHome()">Back to Home</button>
   </div>
 
   <div id="historyOverlay" class="full-overlay" style="z-index: 6100; padding-top: 100px;">
-      <h4 class="fw-bold mb-4"><i class="fa-solid fa-arrow-left me-3" onclick="toggleSettings()"></i>Your History</h4>
+      <h4 class="fw-bold mb-4"><i class="fa-solid fa-arrow-left me-3" onclick="toggleSettings()" style="cursor:pointer"></i>Your History</h4>
       <div id="historyList"></div>
       <button class="btn btn-outline-danger w-100 mt-4 rounded-pill" onclick="clearHistory()">Clear History</button>
   </div>
 
   <div class="bottom-nav">
     <div class="nav-item active" id="btnH" onclick="showHome()"><i class="fa-solid fa-house"></i><span>HOME</span></div>
-    <div class="nav-item" id="btnM" onclick="filterType('Hollywood')"><i class="fa-solid fa-film"></i><span>MOVIES</span></div>
+    <div class="nav-item" id="btnM" onclick="filterType('Hollywood', 'All Movies')"><i class="fa-solid fa-film"></i><span>MOVIES</span></div>
     <div class="nav-item" id="btnS" onclick="filterType('Web Series')"><i class="fa-solid fa-play"></i><span>SERIES</span></div>
     <div class="nav-item" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i><span>SETTINGS</span></div>
   </div>
@@ -182,7 +193,6 @@
     const db = getFirestore(app);
     let moviesData = [];
 
-    // Real-time updates from Firebase
     onSnapshot(collection(db, "movies"), (snap) => {
         moviesData = [];
         snap.forEach(doc => moviesData.push({ id: doc.id, ...doc.data() }));
@@ -196,7 +206,6 @@
           'Web Series': document.getElementById('gridHomeSeries') 
         };
 
-        // Clear existing items
         Object.values(grids).forEach(g => { if(g) g.innerHTML = ''; });
 
         const latest = [...moviesData].reverse();
@@ -211,7 +220,6 @@
             }
         });
 
-        // Hide sections with no content
         document.getElementById('sec-Hollywood').style.display = counts['Hollywood'] > 0 ? 'block' : 'none';
         document.getElementById('sec-Bollywood').style.display = counts['Bollywood'] > 0 ? 'block' : 'none';
         document.getElementById('sec-WebSeries').style.display = counts['Web Series'] > 0 ? 'block' : 'none';
@@ -225,34 +233,40 @@
         return div;
     }
 
-    // Navigation logic
     window.showHome = () => {
         closeAll();
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('searchArea').style.display = 'block';
         setActive('btnH');
+        window.scrollTo(0, 0);
     };
 
-    window.filterType = (type) => {
+    window.filterType = (section, displayTitle) => {
         closeAll();
         document.getElementById('fullListView').style.display = 'block';
         document.getElementById('searchArea').style.display = 'block';
-        document.getElementById('catTitle').innerText = type;
+        // Agar displayTitle diya h toh wo dikhayega nahi toh default section name
+        document.getElementById('catTitle').innerText = displayTitle || section;
+        
         const grid = document.getElementById('gridFullView');
         grid.innerHTML = '';
-        const filtered = moviesData.filter(m => m.section === type).reverse();
+        
+        const filtered = moviesData.filter(m => m.section === section).reverse();
         if(filtered.length > 0) {
             filtered.forEach(m => grid.appendChild(createCard(m)));
         } else {
             grid.innerHTML = "<p class='text-center w-100 opacity-50 py-5'>Coming Soon...</p>";
         }
-        setActive(type === 'Hollywood' ? 'btnM' : 'btnS');
+
+        if(section === 'Hollywood' || section === 'Bollywood') setActive('btnM');
+        else if(section === 'Web Series') setActive('btnS');
     };
 
     window.toggleSettings = () => {
         closeAll();
         document.getElementById('settingsOverlay').style.display = 'block';
         document.getElementById('searchArea').style.display = 'none';
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     };
 
     window.showHistory = () => {
@@ -273,7 +287,7 @@
         let h = JSON.parse(localStorage.getItem('df_history')) || [];
         h = h.filter(x => x.title !== m.title);
         h.unshift(m);
-        localStorage.setItem('df_history', JSON.stringify(h.slice(0,25)));
+        localStorage.setItem('df_history', JSON.stringify(h.slice(0, 25)));
     }
 
     window.clearHistory = () => { localStorage.removeItem('df_history'); showHistory(); };
@@ -287,19 +301,19 @@
 
     function setActive(id) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(id && document.getElementById(id)) document.getElementById(id).classList.add('active');
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
     }
 
-    // Global Search Script
     document.getElementById('globalSearch').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
+        const val = e.target.value.toLowerCase().trim();
         if(val.length > 0) {
             closeAll();
             document.getElementById('fullListView').style.display = 'block';
             document.getElementById('catTitle').innerText = "Results for: " + val;
             const g = document.getElementById('gridFullView');
             g.innerHTML = '';
-            const results = moviesData.filter(m => m.title.toLowerCase().includes(val));
+            const results = moviesData.filter(m => m.title.toLowerCase().includes(val) || (m.section && m.section.toLowerCase().includes(val)));
             results.length ? results.forEach(m => g.appendChild(createCard(m))) : g.innerHTML = "<p class='text-center w-100 opacity-50 py-5'>No results found</p>";
         } else {
             showHome();
@@ -309,4 +323,4 @@
     window.onpopstate = () => showHome();
   </script>
 </body>
-        </html>
+</html>
