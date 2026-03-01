@@ -1,13 +1,17 @@
-// ====== CSS via JavaScript ======
+// ===== Hide Everything Initially =====
+document.body.style.margin = "0";
+document.body.style.background = "#0f172a";
+
+// ===== Add CSS via JS =====
 const style = document.createElement("style");
 style.innerHTML = `
-body{
-  margin:0;
-  height:100vh;
+.lockScreen{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#0f172a,#1e293b);
   font-family:Arial;
 }
 
@@ -15,16 +19,15 @@ body{
   background:white;
   padding:30px;
   border-radius:15px;
-  width:300px;
+  width:280px;
   text-align:center;
-  box-shadow:0 10px 25px rgba(0,0,0,0.3);
-  animation:fadeIn 0.5s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 input{
   width:100%;
   padding:10px;
-  margin:10px 0;
+  margin:15px 0;
   border-radius:8px;
   border:1px solid #ccc;
 }
@@ -49,67 +52,49 @@ button:hover{
   font-size:14px;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:scale(0.9);}
-  to{opacity:1; transform:scale(1);}
+.mainContent{
+  display:none;
+  color:white;
+  padding:20px;
+  font-family:Arial;
+  text-align:center;
 }
 `;
 document.head.appendChild(style);
 
-// ====== Hardcoded Credentials ======
-const correctUser = "admin";
-const correctPass = "1234";
+// ===== Create Main Content (Hidden) =====
+const main = document.createElement("div");
+main.className = "mainContent";
+main.innerHTML = `
+  <h1>Welcome To My Secret Site 🔐</h1>
+  <p>Now everything is visible.</p>
+`;
+document.body.appendChild(main);
 
-// ====== App Container ======
-const app = document.createElement("div");
-document.body.appendChild(app);
+// ===== Create Lock Screen =====
+const lock = document.createElement("div");
+lock.className = "lockScreen";
+lock.innerHTML = `
+  <div class="card">
+    <h2>Unlock</h2>
+    <input type="password" id="pass" placeholder="Enter Password">
+    <button onclick="unlock()">Unlock</button>
+    <p class="error" id="error"></p>
+  </div>
+`;
+document.body.appendChild(lock);
 
-// ====== Render Login ======
-function renderLogin(){
-  app.innerHTML = `
-    <div class="card">
-      <h2>Login</h2>
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <p class="error" id="error"></p>
-    </div>
-  `;
-}
+// ===== Password =====
+const correctPassword = "1234";
 
-// ====== Render Dashboard ======
-function renderDashboard(){
-  app.innerHTML = `
-    <div class="card">
-      <h2>Welcome 🎉</h2>
-      <p>You are logged in successfully.</p>
-      <button onclick="logout()">Logout</button>
-    </div>
-  `;
-}
+// ===== Unlock Function =====
+function unlock(){
+  const entered = document.getElementById("pass").value;
 
-// ====== Login Function ======
-function login(){
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-
-  if(user === correctUser && pass === correctPass){
-    sessionStorage.setItem("loggedIn","true");
-    renderDashboard();
+  if(entered === correctPassword){
+    lock.style.display = "none";
+    main.style.display = "block";
   }else{
-    document.getElementById("error").innerText = "Invalid Username or Password";
+    document.getElementById("error").innerText = "Wrong Password";
   }
-}
-
-// ====== Logout ======
-function logout(){
-  sessionStorage.removeItem("loggedIn");
-  renderLogin();
-}
-
-// ====== Auto Check Login ======
-if(sessionStorage.getItem("loggedIn") === "true"){
-  renderDashboard();
-}else{
-  renderLogin();
 }
