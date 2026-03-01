@@ -1,96 +1,115 @@
-const container = document.getElementById("movieContainer");
+// ====== CSS via JavaScript ======
+const style = document.createElement("style");
+style.innerHTML = `
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  font-family:Arial;
+}
 
-    function displayMovies(list) {
-      container.innerHTML = '';
-      list.forEach(movie => {
-        const div = document.createElement("div");
-        div.className = "movie";
-        div.tabIndex = 0;
-        div.onclick = () => {
-          if (seriesData[movie.name]) {
-            openPopup(movie.name);
-          } else {
-            window.location.href = movie.link;
-          }
-        };
+.card{
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  width:300px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+  animation:fadeIn 0.5s ease;
+}
 
-        const img = document.createElement("img");
-        img.src = movie.poster;
-        img.alt = movie.name;
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
 
-        const title = document.createElement("div");
-        title.className = "movie-title";
-        title.textContent = movie.name;
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}
 
-        div.appendChild(img);
-        div.appendChild(title);
-        container.appendChild(div);
-      });
-    }
+button:hover{
+  background:#1d4ed8;
+}
 
-    function toggleSearch() {
-      const bar = document.getElementById("searchBar");
-      bar.style.display = bar.style.display === "block" ? "none" : "block";
-      if (bar.style.display === "block") {
-        document.getElementById("searchInput").focus();
-      } else {
-        displayMovies(movies);
-      }
-    }
+.error{
+  color:red;
+  font-size:14px;
+}
 
-    function filterMovies() {
-      const keyword = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = movies.filter(movie => movie.name.toLowerCase().includes(keyword));
-      displayMovies(filtered);
-    }
+@keyframes fadeIn{
+  from{opacity:0; transform:scale(0.9);}
+  to{opacity:1; transform:scale(1);}
+}
+`;
+document.head.appendChild(style);
 
-    function openPopup(seriesName) {
-      const data = seriesData[seriesName];
-      if (!data) return;
+// ====== Hardcoded Credentials ======
+const correctUser = "admin";
+const correctPass = "1234";
 
-      document.getElementById("popupOverlay").style.display = "flex";
-      document.getElementById("popupTitle").textContent = seriesName;
+// ====== App Container ======
+const app = document.createElement("div");
+document.body.appendChild(app);
 
-      const seasonContainer = document.getElementById("popupSeasons");
-      const episodeContainer = document.getElementById("popupEpisodes");
-      seasonContainer.innerHTML = '';
-      episodeContainer.innerHTML = '';
+// ====== Render Login ======
+function renderLogin(){
+  app.innerHTML = `
+    <div class="card">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p class="error" id="error"></p>
+    </div>
+  `;
+}
 
-      data.seasons.forEach((season, i) => {
-        const btn = document.createElement("button");
-        btn.textContent = season.title;
-        btn.onclick = () => loadEpisodes(data.imdb_id, season.number, season.episodes);
-        seasonContainer.appendChild(btn);
+// ====== Render Dashboard ======
+function renderDashboard(){
+  app.innerHTML = `
+    <div class="card">
+      <h2>Welcome 🎉</h2>
+      <p>You are logged in successfully.</p>
+      <button onclick="logout()">Logout</button>
+    </div>
+  `;
+}
 
-        if (i === 0) loadEpisodes(data.imdb_id, season.number, season.episodes);
-      });
-    }
+// ====== Login Function ======
+function login(){
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
 
-    function loadEpisodes(imdb_id, seasonNumber, episodes) {
-      const container = document.getElementById("popupEpisodes");
-      container.innerHTML = '';
+  if(user === correctUser && pass === correctPass){
+    sessionStorage.setItem("loggedIn","true");
+    renderDashboard();
+  }else{
+    document.getElementById("error").innerText = "Invalid Username or Password";
+  }
+}
 
-      const title = document.createElement("h3");
-      title.textContent = `Season ${seasonNumber}`;
-      container.appendChild(title);
+// ====== Logout ======
+function logout(){
+  sessionStorage.removeItem("loggedIn");
+  renderLogin();
+}
 
-      episodes.forEach(episode => {
-        const epBtn = document.createElement("div");
-        epBtn.textContent = episode.name;
-        epBtn.onclick = () => {
-          const url = `https://vidapi.xyz/embed/tv/${imdb_id}&s=${seasonNumber}&e=${episode.ep}`;
-          window.location.href = url;
-        };
-        container.appendChild(epBtn);
-      });
-    }
-
-    document.getElementById("popupClose").onclick = () => {
-      document.getElementById("popupOverlay").style.display = "none";
-    };
-
-    window.onload = () => {
-      displayMovies(movies);
-      const first = document.querySelector(".movie");
-      if (first) first.focus();
-    };
+// ====== Auto Check Login ======
+if(sessionStorage.getItem("loggedIn") === "true"){
+  renderDashboard();
+}else{
+  renderLogin();
+}
