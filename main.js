@@ -1,12 +1,15 @@
-// ===== Make Background Full Black =====
+// ====== VERSION SYSTEM ======
+const APP_VERSION = "1.0";   // 👈 Script change karo to isko 1.1 kar dena
+
+// ====== BASIC SETTINGS ======
 document.body.style.margin = "0";
 document.body.style.background = "#000";
 document.body.style.overflow = "hidden";
 
-// ===== Add CSS =====
+// ====== STYLE ======
 const style = document.createElement("style");
 style.innerHTML = `
-.lockOverlay{
+.overlay{
   position:fixed;
   inset:0;
   background:#000;
@@ -17,41 +20,30 @@ style.innerHTML = `
   font-family:Arial;
 }
 
-.loginBox{
+.box{
   background:#111;
   padding:30px;
-  border-radius:12px;
+  border-radius:10px;
   width:280px;
   text-align:center;
-  box-shadow:0 0 20px rgba(255,255,255,0.1);
-}
-
-.loginBox h2{
-  color:white;
 }
 
 input{
   width:100%;
   padding:10px;
   margin:15px 0;
-  border-radius:8px;
   border:none;
-  outline:none;
+  border-radius:6px;
 }
 
 button{
   width:100%;
   padding:10px;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   background:#2563eb;
   color:white;
-  font-weight:bold;
   cursor:pointer;
-}
-
-button:hover{
-  background:#1d4ed8;
 }
 
 .error{
@@ -59,59 +51,75 @@ button:hover{
   font-size:14px;
 }
 
-.mainContent{
+.main{
   display:none;
   color:white;
-  padding:20px;
+  padding:30px;
   text-align:center;
 }
 `;
 document.head.appendChild(style);
 
-// ===== Hidden Main Content =====
+// ====== MAIN CONTENT ======
 const main = document.createElement("div");
-main.className = "mainContent";
+main.className = "main";
 main.innerHTML = `
   <h1>Welcome 🔓</h1>
-  <p>Now full site is accessible.</p>
+  <p>Your secured content is now visible.</p>
 `;
 document.body.appendChild(main);
 
-// ===== Lock Overlay =====
-const overlay = document.createElement("div");
-overlay.className = "lockOverlay";
-overlay.innerHTML = `
-  <div class="loginBox">
-    <h2>Enter Password</h2>
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="unlock()">Login</button>
-    <p class="error" id="error"></p>
-  </div>
-`;
-document.body.appendChild(overlay);
-
-// ===== Password =====
+// ====== PASSWORD ======
 const correctPassword = "1234";
 
-// ===== Unlock Function =====
-function unlock(){
-  const pass = document.getElementById("password").value;
+// ====== CHECK VERSION ======
+const savedVersion = localStorage.getItem("app_version");
+const savedLogin = localStorage.getItem("logged_in");
+
+// Agar version change hua ho to login reset
+if(savedVersion !== APP_VERSION){
+  localStorage.removeItem("logged_in");
+  localStorage.setItem("app_version", APP_VERSION);
+}
+
+// ====== SHOW LOGIN IF NOT LOGGED ======
+if(localStorage.getItem("logged_in") !== "true"){
+  showLogin();
+}else{
+  unlockApp();
+}
+
+// ====== LOGIN SCREEN ======
+function showLogin(){
+  const overlay = document.createElement("div");
+  overlay.className = "overlay";
+  overlay.id = "overlay";
+  overlay.innerHTML = `
+    <div class="box">
+      <h2 style="color:white;">Enter Password</h2>
+      <input type="password" id="pass" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p class="error" id="error"></p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+// ====== LOGIN FUNCTION ======
+function login(){
+  const pass = document.getElementById("pass").value;
 
   if(pass === correctPassword){
-    overlay.remove(); // Completely remove overlay
-    document.body.style.overflow = "auto";
-    main.style.display = "block";
+    localStorage.setItem("logged_in","true");
+    unlockApp();
+    document.getElementById("overlay").remove();
   }else{
     document.getElementById("error").innerText = "Wrong Password";
   }
 }
 
-// ===== Disable Right Click & Inspect =====
-document.addEventListener("contextmenu", e => e.preventDefault());
-document.addEventListener("keydown", function(e){
-  if(e.key === "F12" || 
-     (e.ctrlKey && e.shiftKey && e.key === "I") ||
-     (e.ctrlKey && e.key === "U")){
-    e.preventDefault();
-  }
-});
+// ====== UNLOCK ======
+function unlockApp(){
+  document.body.style.overflow = "auto";
+  main.style.display = "block";
+}
