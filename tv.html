@@ -158,18 +158,7 @@
     }
     #player-bottom-bar.ui-visible { pointer-events: auto; }
 
-    #seek-bar-wrapper {
-      width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-    }
-    #seek-time-current, #seek-time-total { font-family: monospace; font-size: 0.75rem; color: #d4d4d8; min-width: 42px; text-align: center; }
-    #seek-track {
-      flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 999px; position: relative; cursor: pointer; outline-offset: 6px;
-    }
-    #seek-track.tv-focused { outline: 3px solid var(--primary); }
-    #seek-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--primary); border-radius: 999px; width: 0%; }
-    #seek-thumb { position: absolute; top: 50%; width: 14px; height: 14px; background: #fff; border: 2px solid var(--primary); border-radius: 50%; transform: translate(-50%, -50%); left: 0%; transition: left 0.1s linear; }
-
-    #control-row { display: flex; align-items: center; justify-content: center; gap: 18px; }
+    #control-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 20px; }
     .player-btn {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff;
       width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -181,6 +170,17 @@
     #btn-play-pause:hover { background: #dc2626; }
     #btn-play-pause.tv-focused { outline: 3px solid #fff; }
 
+    #seek-bar-wrapper {
+      width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+    }
+    #seek-time-current, #seek-time-total { font-family: monospace; font-size: 0.75rem; color: #d4d4d8; min-width: 42px; text-align: center; }
+    #seek-track {
+      flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 999px; position: relative; cursor: pointer; outline-offset: 6px;
+    }
+    #seek-track.tv-focused { outline: 3px solid var(--primary); }
+    #seek-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--primary); border-radius: 999px; width: 0%; }
+    #seek-thumb { position: absolute; top: 50%; width: 14px; height: 14px; background: #fff; border: 2px solid var(--primary); border-radius: 50%; transform: translate(-50%, -50%); left: 0%; transition: left 0.1s linear; }
+
     #player-center-feedback {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       background: rgba(0,0,0,0.6); border-radius: 50%; width: 90px; height: 90px;
@@ -190,7 +190,7 @@
     #player-center-feedback.show { opacity: 1; }
 
     #remote-hint {
-      text-align: center; font-size: 0.65rem; color: #71717a; margin-top: 10px; font-family: monospace; letter-spacing: 0.5px;
+      text-align: center; font-size: 0.65rem; color: #71717a; margin-top: 15px; font-family: monospace; letter-spacing: 0.5px;
     }
 
     /* Fade overlay UI out when idle */
@@ -300,6 +300,15 @@
       </div>
 
       <div id="player-bottom-bar" class="ui-visible">
+          <!-- 1. CONTROL BUTTON ROW (NOW AT THE TOP OF THE PANEL) -->
+          <div id="control-row">
+              <div class="player-btn" id="btn-rewind" data-focusable="true" tabindex="0"><i class="fa-solid fa-backward"></i></div>
+              <div class="player-btn" id="btn-play-pause" data-focusable="true" tabindex="0"><i class="fa-solid fa-play" id="play-pause-icon"></i></div>
+              <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
+              <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
+          </div>
+
+          <!-- 2. SEEK BAR (NOW POSITIONED DIRECTLY UNDER BUTTONS) -->
           <div id="seek-bar-wrapper">
               <span id="seek-time-current">00:00</span>
               <div id="seek-track" data-focusable="true" tabindex="0">
@@ -308,13 +317,8 @@
               </div>
               <span id="seek-time-total">00:00</span>
           </div>
-          <div id="control-row">
-              <div class="player-btn" id="btn-rewind" data-focusable="true" tabindex="0"><i class="fa-solid fa-backward"></i></div>
-              <div class="player-btn" id="btn-play-pause" data-focusable="true" tabindex="0"><i class="fa-solid fa-play" id="play-pause-icon"></i></div>
-              <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
-              <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
-          </div>
-          <div id="remote-hint">◄ ► SEEK 10s &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
+          
+          <div id="remote-hint">◄ ► SEEK 10s (60s on bar) &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
       </div>
   </div>
 
@@ -342,10 +346,6 @@
 
     /* =========================================================
        REMOTE / D-PAD / KEYBOARD NAVIGATION ENGINE
-       Works for: TV remotes (arrow keys + Enter + Back/Escape),
-       physical keyboards (PC), and falls back gracefully to
-       touch/mouse on mobile. No focus trap, no external player
-       dependency - native <video> + custom controls only.
        ========================================================= */
     const TVNav = (() => {
         let focusables = [];
@@ -378,7 +378,6 @@
             }
         }
 
-        // Spatial navigation: find nearest element in a given direction
         function moveDirection(dir) {
             if (!focusables.length || currentIndex < 0) return;
             const cur = focusables[currentIndex].getBoundingClientRect();
@@ -426,15 +425,9 @@
 
         function isActive() { return active; }
 
-        function getCurrentEl() {
-            return (currentIndex >= 0) ? focusables[currentIndex] : null;
-        }
-
-        return { refresh, moveDirection, activateCurrent, setScope, clearScope, isActive, getCurrentEl };
+        return { refresh, moveDirection, activateCurrent, setScope, clearScope, isActive };
     })();
 
-    // Global key handler - works for TV remotes mapped to arrow keys + Enter + Backspace/Escape,
-    // and for keyboards on PC. Mobile/touch users simply tap (unaffected by this).
     document.addEventListener('keydown', (e) => {
         const playerOpen = document.getElementById('video-player-screen').style.display === 'flex';
         const modalEl = document.getElementById('playbackRoutingModal');
@@ -445,7 +438,6 @@
             return;
         }
 
-        // Modal takes priority over whatever screen is behind it.
         if (modalOpen) {
             switch (e.key) {
                 case 'ArrowUp': e.preventDefault(); TVNav.moveDirection('up'); break;
@@ -483,7 +475,7 @@
     });
 
     /* =========================================================
-       VIDEO PLAYER - native HTML5 video + custom control bar
+       VIDEO PLAYER CORE ENGINE
        ========================================================= */
     const videoEl = document.getElementById('main-video-element');
     const playPauseIcon = document.getElementById('play-pause-icon');
@@ -578,7 +570,6 @@
     document.getElementById('btn-forward').addEventListener('click', () => seekBy(10));
     document.getElementById('btn-mute').addEventListener('click', toggleMute);
 
-    // Click-to-seek on the track (mouse/touch)
     seekTrack.addEventListener('click', (e) => {
         const rect = seekTrack.getBoundingClientRect();
         const pct = (e.clientX - rect.left) / rect.width;
@@ -586,15 +577,15 @@
         showControls();
     });
 
-    // Mouse movement / touch reveals controls on the player stage
     document.getElementById('video-stage').addEventListener('mousemove', showControls);
     document.getElementById('video-stage').addEventListener('click', showControls);
 
-    // Player-specific keydown handling (active only while player is open).
-    // ArrowLeft/Right seek +/-10s when seek-track is focused, or move focus otherwise;
-    // ArrowUp/Down move focus between bottom-bar controls and top-bar close button.
+    /* =========================================================
+       DYNAMIC STRUCTURAL ADJUSTED KEYBOARD NAVIGATION MAP
+       ========================================================= */
+    // Order matches layout top-to-bottom: Close -> Buttons Row -> Seek Bar Track
     const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'seek-track'];
-    let playerFocusIndex = 2; // start on play/pause
+    let playerFocusIndex = 2; // Starts tracking perfectly on centered Play/Pause button node
 
     function applyPlayerFocus() {
         playerFocusOrder.forEach(id => document.getElementById(id).classList.remove('tv-focused'));
@@ -604,32 +595,44 @@
         showControls();
     }
 
-        function handlePlayerKeydown(e) {
+    function handlePlayerKeydown(e) {
         const focusedIsTrack = playerFocusOrder[playerFocusIndex] === 'seek-track';
 
         switch (e.key) {
             case 'ArrowLeft':
                 e.preventDefault();
-                // Agar seek bar par hain toh 60 seconds piche jayega, baki buttons par 10 seconds
-                if (focusedIsTrack) { seekBy(-60); }
-                else { playerFocusIndex = (playerFocusIndex - 1 + playerFocusOrder.length) % playerFocusOrder.length; applyPlayerFocus(); }
+                if (focusedIsTrack) { 
+                    seekBy(-60); // Jumps instantly by 1 Minute when timeline bar is focused!
+                } else { 
+                    // Move left inside the lower control grid buttons
+                    if(playerFocusIndex > 1 && playerFocusIndex < 5) { playerFocusIndex--; applyPlayerFocus(); }
+                }
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                // Agar seek bar par hain toh 60 seconds aage jayega, baki buttons par 10 seconds
-                if (focusedIsTrack) { seekBy(60); }
-                else { playerFocusIndex = (playerFocusIndex + 1) % playerFocusOrder.length; applyPlayerFocus(); }
+                if (focusedIsTrack) { 
+                    seekBy(60); // Jumps instantly by 1 Minute when timeline bar is focused!
+                } else { 
+                    // Move right inside the lower control grid buttons
+                    if(playerFocusIndex >= 1 && playerFocusIndex < 4) { playerFocusIndex++; applyPlayerFocus(); }
+                }
                 break;
             case 'ArrowDown':
                 e.preventDefault();
-                if (playerFocusIndex === 0) { playerFocusIndex = 2; }
-                else { playerFocusIndex = playerFocusOrder.length - 1; } // jump to seek track
+                if (playerFocusIndex === 0) { 
+                    playerFocusIndex = 2; // From top Close Stream button, down to Play/Pause button
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 4) { 
+                    playerFocusIndex = 5; // From any button row node, down to the timeline seek-track
+                }
                 applyPlayerFocus();
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                if (focusedIsTrack) { playerFocusIndex = 2; }
-                else { playerFocusIndex = 0; } // jump to close button
+                if (focusedIsTrack) { 
+                    playerFocusIndex = 2; // From lower seek bar track, up to Play/Pause button row
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 4) { 
+                    playerFocusIndex = 0; // From button row, up to top Close Stream button
+                }
                 applyPlayerFocus();
                 break;
             case 'Enter':
@@ -648,7 +651,6 @@
         }
     }
 
-
     function closePlayer() {
         videoEl.pause();
         videoEl.removeAttribute('src');
@@ -663,14 +665,15 @@
         document.getElementById('player-video-title').innerText = title;
         videoEl.src = streamUrl;
         document.getElementById('video-player-screen').style.display = 'flex';
-        playerFocusIndex = 2;
+        playerFocusIndex = 2; // Focus Play/Pause on startup
         applyPlayerFocus();
         videoEl.play().catch(() => {});
         TVNav.clearScope();
     }
 
-    /* ========================================================= */
-
+    /* =========================================================
+       DROPBOX STORAGE NODE INTEGRATION API 
+       ========================================================= */
     async function fetchFreshAccessToken() {
         try {
             const response = await fetch('https://api.dropbox.com/oauth2/token', {
@@ -787,14 +790,10 @@
         routingModalInstance.show();
     }
 
-    // Bootstrap fires this once the modal is fully shown and its own focus
-    // handling has settled - this is the reliable moment to hand control to TVNav.
     document.getElementById('playbackRoutingModal').addEventListener('shown.bs.modal', () => {
         TVNav.setScope('#playbackRoutingModal');
     });
 
-    // When the modal closes (X button, backdrop click, Escape via Bootstrap),
-    // hand control back to whichever screen is visible.
     document.getElementById('playbackRoutingModal').addEventListener('hidden.bs.modal', () => {
         if (document.getElementById('video-player-screen').style.display === 'flex') return;
         if (document.getElementById('fullListView').style.display === 'block') { TVNav.setScope('#fullListView, .bottom-nav'); return; }
