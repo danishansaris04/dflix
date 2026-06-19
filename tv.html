@@ -441,11 +441,15 @@
                     rawLink = rawLink.replace("www.dropbox.com", "dl.dropboxusercontent.com");
                 }
                 let cleanUrl = rawLink.split('?')[0] + "?raw=1";
-                let cleanLinkNoProtocol = cleanUrl.replace(/^https?:\/\//i, '');
-                let escapedTitle = encodeURIComponent(item.name);
+                
+                // net::ERR_UNKNOWN_URL_SCHEME ko bypass karne ke liye direct stream video launch kiya gaya hai
+                // Isse TV browser system dialog open karega taaki VLC/Just Player trigger ho sake
+                window.location.href = cleanUrl;
 
-                let computedIntentURI = `intent://${cleanLinkNoProtocol}#Intent;scheme=https;type=video/*;package=com.brouken.player;S.title=${escapedTitle};B.force_no_download=true;end`;
-                window.location.href = computedIntentURI;
+                setTimeout(() => {
+                    window.open(cleanUrl, '_blank');
+                }, 400);
+
             }).catch(() => alert("Failed to compound dynamic android playback matrix link."));
     }
 
