@@ -314,7 +314,7 @@
               <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
               <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
           </div>
-          <div id="remote-hint">◄ ► SEEK 10s (60s on bar) &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
+          <div id="remote-hint">◄ ► SEEK 10s &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
       </div>
   </div>
 
@@ -437,9 +437,28 @@
     // and for keyboards on PC. Mobile/touch users simply tap (unaffected by this).
     document.addEventListener('keydown', (e) => {
         const playerOpen = document.getElementById('video-player-screen').style.display === 'flex';
+        const modalEl = document.getElementById('playbackRoutingModal');
+        const modalOpen = modalEl.classList.contains('show');
 
         if (playerOpen) {
             handlePlayerKeydown(e);
+            return;
+        }
+
+        // Modal takes priority over whatever screen is behind it.
+        if (modalOpen) {
+            switch (e.key) {
+                case 'ArrowUp': e.preventDefault(); TVNav.moveDirection('up'); break;
+                case 'ArrowDown': e.preventDefault(); TVNav.moveDirection('down'); break;
+                case 'ArrowLeft': e.preventDefault(); TVNav.moveDirection('left'); break;
+                case 'ArrowRight': e.preventDefault(); TVNav.moveDirection('right'); break;
+                case 'Enter': e.preventDefault(); TVNav.activateCurrent(); break;
+                case 'Backspace':
+                case 'Escape':
+                    e.preventDefault();
+                    routingModalInstance.hide();
+                    break;
+            }
             return;
         }
 
@@ -572,7 +591,8 @@
     document.getElementById('video-stage').addEventListener('click', showControls);
 
     // Player-specific keydown handling (active only while player is open).
-    // Modified: ArrowLeft/Right seek +/- 60s when length bar (seek-track) is focused!
+    // ArrowLeft/Right seek +/-10s when seek-track is focused, or move focus otherwise;
+    // ArrowUp/Down move focus between bottom-bar controls and top-bar close button.
     const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'seek-track'];
     let playerFocusIndex = 2; // start on play/pause
 
@@ -590,14 +610,12 @@
         switch (e.key) {
             case 'ArrowLeft':
                 e.preventDefault();
-                // Agar length bar par hain toh 60 seconds piche jayega, normal button par 10s
-                if (focusedIsTrack) { seekBy(-60); }
+                if (focusedIsTrack) { seekBy(-10); }
                 else { playerFocusIndex = (playerFocusIndex - 1 + playerFocusOrder.length) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                // Agar length bar par hain toh 60 seconds aage jayega, normal button par 10s
-                if (focusedIsTrack) { seekBy(60); }
+                if (focusedIsTrack) { seekBy(10); }
                 else { playerFocusIndex = (playerFocusIndex + 1) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
             case 'ArrowDown':
@@ -764,8 +782,22 @@
         activeItemSelection = item;
         document.getElementById('routingModalTitle').innerText = item.name;
         routingModalInstance.show();
-        setTimeout(() => TVNav.setScope('#playbackRoutingModal'), 150);
     }
+
+    // Bootstrap fires this once the modal is fully shown and its own focus
+    // handling has settled - this is the reliable moment to hand control to TVNav.
+    document.getElementById('playbackRoutingModal').addEventListener('shown.bs.modal', () => {
+        TVNav.setScope('#playbackRoutingModal');
+    });
+
+    // When the modal closes (X button, backdrop click, Escape via Bootstrap),
+    // hand control back to whichever screen is visible.
+    document.getElementById('playbackRoutingModal').addEventListener('hidden.bs.modal', () => {
+        if (document.getElementById('video-player-screen').style.display === 'flex') return;
+        if (document.getElementById('fullListView').style.display === 'block') { TVNav.setScope('#fullListView, .bottom-nav'); return; }
+        if (document.getElementById('historyOverlay').style.display === 'block') { TVNav.setScope('#historyOverlay'); return; }
+        TVNav.setScope('#homePage, .bottom-nav');
+    });
 
     function executeWebStreaming(item) {
         dbx.filesGetTemporaryLink({ path: item.path_lower })
@@ -821,7 +853,7 @@
                     card.onclick = () => { saveHistory(item); triggerPlaybackSelection(item); };
                     card.innerHTML = `<div class="icon-box-preview text-danger"><i class="fa-solid fa-circle-play"></i></div><div class="m-content">${item.name}</div>`;
                 }
-                grid.appendChild(grid.appendChild(card));
+                grid.appendChild(card);
             });
         } else {
             grid.innerHTML = `<p class='text-center w-100 opacity-40 py-5 font-monospace text-xs'>No ${typeFilter} items found inside this path node.</p>`;
