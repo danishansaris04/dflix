@@ -604,18 +604,20 @@
         showControls();
     }
 
-    function handlePlayerKeydown(e) {
+        function handlePlayerKeydown(e) {
         const focusedIsTrack = playerFocusOrder[playerFocusIndex] === 'seek-track';
 
         switch (e.key) {
             case 'ArrowLeft':
                 e.preventDefault();
-                if (focusedIsTrack) { seekBy(-10); }
+                // Agar seek bar par hain toh 60 seconds piche jayega, baki buttons par 10 seconds
+                if (focusedIsTrack) { seekBy(-60); }
                 else { playerFocusIndex = (playerFocusIndex - 1 + playerFocusOrder.length) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                if (focusedIsTrack) { seekBy(10); }
+                // Agar seek bar par hain toh 60 seconds aage jayega, baki buttons par 10 seconds
+                if (focusedIsTrack) { seekBy(60); }
                 else { playerFocusIndex = (playerFocusIndex + 1) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
             case 'ArrowDown':
@@ -645,6 +647,7 @@
                 break;
         }
     }
+
 
     function closePlayer() {
         videoEl.pause();
