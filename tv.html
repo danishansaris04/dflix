@@ -314,7 +314,7 @@
               <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
               <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
           </div>
-          <div id="remote-hint">◄ ► SEEK 10s &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
+          <div id="remote-hint">◄ ► SEEK 10s (60s on bar) &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
       </div>
   </div>
 
@@ -572,8 +572,7 @@
     document.getElementById('video-stage').addEventListener('click', showControls);
 
     // Player-specific keydown handling (active only while player is open).
-    // ArrowLeft/Right seek +/-10s when seek-track is focused, or move focus otherwise;
-    // ArrowUp/Down move focus between bottom-bar controls and top-bar close button.
+    // Modified: ArrowLeft/Right seek +/- 60s when length bar (seek-track) is focused!
     const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'seek-track'];
     let playerFocusIndex = 2; // start on play/pause
 
@@ -585,19 +584,19 @@
         showControls();
     }
 
-        function handlePlayerKeydown(e) {
+    function handlePlayerKeydown(e) {
         const focusedIsTrack = playerFocusOrder[playerFocusIndex] === 'seek-track';
 
         switch (e.key) {
             case 'ArrowLeft':
                 e.preventDefault();
-                // Agar seek bar par hain toh 60 seconds piche jayega, baki buttons par 10 seconds
+                // Agar length bar par hain toh 60 seconds piche jayega, normal button par 10s
                 if (focusedIsTrack) { seekBy(-60); }
                 else { playerFocusIndex = (playerFocusIndex - 1 + playerFocusOrder.length) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
             case 'ArrowRight':
                 e.preventDefault();
-                // Agar seek bar par hain toh 60 seconds aage jayega, baki buttons par 10 seconds
+                // Agar length bar par hain toh 60 seconds aage jayega, normal button par 10s
                 if (focusedIsTrack) { seekBy(60); }
                 else { playerFocusIndex = (playerFocusIndex + 1) % playerFocusOrder.length; applyPlayerFocus(); }
                 break;
@@ -628,7 +627,6 @@
                 break;
         }
     }
-
 
     function closePlayer() {
         videoEl.pause();
@@ -823,7 +821,7 @@
                     card.onclick = () => { saveHistory(item); triggerPlaybackSelection(item); };
                     card.innerHTML = `<div class="icon-box-preview text-danger"><i class="fa-solid fa-circle-play"></i></div><div class="m-content">${item.name}</div>`;
                 }
-                grid.appendChild(card);
+                grid.appendChild(grid.appendChild(card));
             });
         } else {
             grid.innerHTML = `<p class='text-center w-100 opacity-40 py-5 font-monospace text-xs'>No ${typeFilter} items found inside this path node.</p>`;
