@@ -444,7 +444,7 @@
                 let cleanLinkNoProtocol = cleanUrl.replace(/^https?:\/\//i, '');
                 let escapedTitle = encodeURIComponent(item.name);
 
-                let computedIntentURI = `intent://${cleanLinkNoProtocol}#Intent;scheme=https;type=video/*;package=com.brouken.player;S.title=${escapedTitle};B.force_no_download=true;end`;
+                let computedIntentURI = `intent://${cleanLinkNoProtocol}#Intent;scheme=https;type=video/*;package=com.videoplayer.arcplayer;S.title=${escapedTitle};B.force_no_download=true;end`;
                 window.location.href = computedIntentURI;
             }).catch(() => alert("Failed to compound dynamic android playback matrix link."));
     }
