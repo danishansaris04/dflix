@@ -123,7 +123,7 @@
       background: var(--bg-dark); z-index: 4000; display: none;
       padding: 120px 20px 80px 20px; overflow-y: auto;
     }
-    .history-card { display: flex; gap: 15px; background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);}
+    .history-card { display: flex; gap: 15px; background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
     .history-card.tv-focused { outline: 3px solid var(--primary); outline-offset: 2px; border-color: var(--primary); }
 
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; margin-top: 10px; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -300,15 +300,17 @@
       </div>
 
       <div id="player-bottom-bar" class="ui-visible">
-          <!-- 1. CONTROL BUTTON ROW (NOW AT THE TOP OF THE PANEL) -->
+          <!-- 1. CONTROL BUTTON ROW -->
           <div id="control-row">
               <div class="player-btn" id="btn-rewind" data-focusable="true" tabindex="0"><i class="fa-solid fa-backward"></i></div>
               <div class="player-btn" id="btn-play-pause" data-focusable="true" tabindex="0"><i class="fa-solid fa-play" id="play-pause-icon"></i></div>
               <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
               <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
+              <!-- FULLSCREEN OPTION ADDED HERE -->
+              <div class="player-btn" id="btn-fullscreen" data-focusable="true" tabindex="0"><i class="fa-solid fa-expand" id="fullscreen-icon"></i></div>
           </div>
 
-          <!-- 2. SEEK BAR (NOW POSITIONED DIRECTLY UNDER BUTTONS) -->
+          <!-- 2. SEEK BAR -->
           <div id="seek-bar-wrapper">
               <span id="seek-time-current">00:00</span>
               <div id="seek-track" data-focusable="true" tabindex="0">
@@ -480,6 +482,7 @@
     const videoEl = document.getElementById('main-video-element');
     const playPauseIcon = document.getElementById('play-pause-icon');
     const muteIcon = document.getElementById('mute-icon');
+    const fullscreenIcon = document.getElementById('fullscreen-icon');
     const seekFill = document.getElementById('seek-fill');
     const seekThumb = document.getElementById('seek-thumb');
     const seekTrack = document.getElementById('seek-track');
@@ -488,6 +491,7 @@
     const centerFeedback = document.getElementById('player-center-feedback');
     const topBar = document.getElementById('player-top-bar');
     const bottomBar = document.getElementById('player-bottom-bar');
+    const playerScreen = document.getElementById('video-player-screen');
 
     let controlsHideTimer = null;
 
@@ -541,6 +545,29 @@
         showControls();
     }
 
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            // Pure Player Screen wrapper container ko full screen karenge, taaki custom UI preserve rahe
+            playerScreen.requestFullscreen().then(() => {
+                fullscreenIcon.className = 'fa-solid fa-compress';
+            }).catch(err => {
+                alert(`Error transitioning to fullscreen layout mode: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen().then(() => {
+                fullscreenIcon.className = 'fa-solid fa-expand';
+            });
+        }
+        showControls();
+    }
+
+    // Full screen change handle logic manually browser crash check ke liye
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            fullscreenIcon.className = 'fa-solid fa-expand';
+        }
+    });
+
     videoEl.addEventListener('play', () => {
         playPauseIcon.className = 'fa-solid fa-pause';
         showCenterFeedback('fa-play');
@@ -569,6 +596,7 @@
     document.getElementById('btn-rewind').addEventListener('click', () => seekBy(-10));
     document.getElementById('btn-forward').addEventListener('click', () => seekBy(10));
     document.getElementById('btn-mute').addEventListener('click', toggleMute);
+    document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
 
     seekTrack.addEventListener('click', (e) => {
         const rect = seekTrack.getBoundingClientRect();
@@ -583,8 +611,8 @@
     /* =========================================================
        DYNAMIC STRUCTURAL ADJUSTED KEYBOARD NAVIGATION MAP
        ========================================================= */
-    // Order matches layout top-to-bottom: Close -> Buttons Row -> Seek Bar Track
-    const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'seek-track'];
+    // Added 'btn-fullscreen' in the control row focus chain mapping array
+    const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'btn-fullscreen', 'seek-track'];
     let playerFocusIndex = 2; // Starts tracking perfectly on centered Play/Pause button node
 
     function applyPlayerFocus() {
@@ -604,8 +632,8 @@
                 if (focusedIsTrack) { 
                     seekBy(-60); // Jumps instantly by 1 Minute when timeline bar is focused!
                 } else { 
-                    // Move left inside the lower control grid buttons
-                    if(playerFocusIndex > 1 && playerFocusIndex < 5) { playerFocusIndex--; applyPlayerFocus(); }
+                    // Move left inside the lower control grid buttons (Index 1 to 5)
+                    if(playerFocusIndex > 1 && playerFocusIndex < 6) { playerFocusIndex--; applyPlayerFocus(); }
                 }
                 break;
             case 'ArrowRight':
@@ -614,15 +642,15 @@
                     seekBy(60); // Jumps instantly by 1 Minute when timeline bar is focused!
                 } else { 
                     // Move right inside the lower control grid buttons
-                    if(playerFocusIndex >= 1 && playerFocusIndex < 4) { playerFocusIndex++; applyPlayerFocus(); }
+                    if(playerFocusIndex >= 1 && playerFocusIndex < 5) { playerFocusIndex++; applyPlayerFocus(); }
                 }
                 break;
             case 'ArrowDown':
                 e.preventDefault();
                 if (playerFocusIndex === 0) { 
                     playerFocusIndex = 2; // From top Close Stream button, down to Play/Pause button
-                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 4) { 
-                    playerFocusIndex = 5; // From any button row node, down to the timeline seek-track
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 5) { 
+                    playerFocusIndex = 6; // From any button row node, down to the timeline seek-track
                 }
                 applyPlayerFocus();
                 break;
@@ -630,7 +658,7 @@
                 e.preventDefault();
                 if (focusedIsTrack) { 
                     playerFocusIndex = 2; // From lower seek bar track, up to Play/Pause button row
-                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 4) { 
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 5) { 
                     playerFocusIndex = 0; // From button row, up to top Close Stream button
                 }
                 applyPlayerFocus();
@@ -652,6 +680,9 @@
     }
 
     function closePlayer() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+        }
         videoEl.pause();
         videoEl.removeAttribute('src');
         videoEl.load();
