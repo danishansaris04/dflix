@@ -208,9 +208,10 @@
           <button type="button" class="btn btn-danger intent-btn w-100" id="routeToWebPlayerBtn">
             <i class="fa-solid fa-globe"></i> Play in Web Player Engine
           </button>
-          <button type="button" class="btn btn-outline-light intent-btn w-100" id="routeToAppIntentBtn">
+          
+          <a href="#" id="routeToAppIntentBtn" class="btn btn-outline-light intent-btn w-100" style="text-decoration: none;">
             <i class="fa-solid fa-mobile-screen-button"></i> Play in External Android App
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -343,11 +344,13 @@
                 executeWebStreaming(activeItemSelection);
             }
         });
-
-        document.getElementById('routeToAppIntentBtn').addEventListener('click', () => {
-            if(activeItemSelection) {
+        
+        // Modal button click par trigger link execution karega
+        document.getElementById('routeToAppIntentBtn').addEventListener('click', (e) => {
+            if(!activeItemSelection) {
+                e.preventDefault();
+            } else {
                 routingModalInstance.hide();
-                executeAndroidAppIntent(activeItemSelection);
             }
         });
     });
@@ -414,7 +417,30 @@
     function triggerPlaybackSelection(item) {
         activeItemSelection = item;
         document.getElementById('routingModalTitle').innerText = item.name;
-        routingModalInstance.show();
+        
+        // Pehle hi dynamic intent ready kar ke <a> tag ke href me inject kar dete hain
+        dbx.filesGetTemporaryLink({ path: item.path_lower })
+            .then((res) => {
+                let rawLink = res.result.link;
+                if (rawLink.includes("www.dropbox.com")) {
+                    rawLink = rawLink.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+                }
+                let cleanUrl = rawLink.split('?')[0] + "?raw=1";
+                let cleanLinkNoProtocol = cleanUrl.replace(/^https?:\/\//i, '');
+                let escapedTitle = encodeURIComponent(item.name);
+
+                // VLC target standard intent structure format fallback
+                let vlcIntent = `intent://${cleanLinkNoProtocol}#Intent;scheme=https;type=video/*;package=org.videolan.vlc;S.title=${escapedTitle};end`;
+                
+                // Just Player standard fallback scheme setup 
+                let bPlayerIntent = `intent://${cleanLinkNoProtocol}#Intent;scheme=https;type=video/*;package=com.brouken.player;S.title=${escapedTitle};B.force_no_download=true;end`;
+
+                // Hum dono me se Just Player ko default structured intent anchor bana rahe hain
+                document.getElementById('routeToAppIntentBtn').setAttribute('href', bPlayerIntent);
+                routingModalInstance.show();
+            }).catch(() => {
+                alert("Error preparation of direct app playback link.");
+            });
     }
 
     function executeWebStreaming(item) {
@@ -431,26 +457,6 @@
                 
                 initFluidCoreEngine(cleanUrl);
             }).catch(() => alert("Error processing temporary token stream link."));
-    }
-
-    function executeAndroidAppIntent(item) {
-        dbx.filesGetTemporaryLink({ path: item.path_lower })
-            .then((res) => {
-                let rawLink = res.result.link;
-                if (rawLink.includes("www.dropbox.com")) {
-                    rawLink = rawLink.replace("www.dropbox.com", "dl.dropboxusercontent.com");
-                }
-                let cleanUrl = rawLink.split('?')[0] + "?raw=1";
-                
-                // net::ERR_UNKNOWN_URL_SCHEME ko bypass karne ke liye direct stream video launch kiya gaya hai
-                // Isse TV browser system dialog open karega taaki VLC/Just Player trigger ho sake
-                window.location.href = cleanUrl;
-
-                setTimeout(() => {
-                    window.open(cleanUrl, '_blank');
-                }, 400);
-
-            }).catch(() => alert("Failed to compound dynamic android playback matrix link."));
     }
 
     window.filterStaticSection = (typeFilter) => {
