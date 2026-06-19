@@ -9,8 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/10.30.0/Dropbox-sdk.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css" type="text/css"/>
-  <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap');
@@ -77,7 +75,8 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
       display: flex; flex-direction: column; height: auto; min-height: 180px;
     }
-    .m-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(239,68,68,0.1); }
+    .m-card:hover, .m-card.tv-focused { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 8px 20px rgba(239,68,68,0.1); }
+    .m-card.tv-focused { outline: 3px solid var(--primary); outline-offset: 2px; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
     /* Icon Visual Canvas Center Box */
@@ -86,7 +85,7 @@
         background: rgba(255,255,255,0.01); border-bottom: 1px solid rgba(255,255,255,0.02);
         font-size: 2.5rem; transition: 0.3s;
     }
-    .m-card:hover .icon-box-preview { background: rgba(239,68,68,0.03); }
+    .m-card:hover .icon-box-preview, .m-card.tv-focused .icon-box-preview { background: rgba(239,68,68,0.03); }
     
     /* Full Name Typography Output Box */
     .m-content { 
@@ -95,7 +94,7 @@
         word-break: break-all; white-space: normal; line-height: 1.3;
         display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .m-card:hover .m-content { color: #ffffff; }
+    .m-card:hover .m-content, .m-card.tv-focused .m-content { color: #ffffff; }
 
     /* Back Directory Controller Tab */
     .back-node-button {
@@ -104,7 +103,7 @@
         color: #a1a1aa; font-size: 0.75rem; font-weight: bold; padding: 8px 16px;
         border-radius: 8px; cursor: pointer; transition: 0.2s;
     }
-    .back-node-button:hover { border-color: var(--primary); color: #fff; }
+    .back-node-button:hover, .back-node-button.tv-focused { border-color: var(--primary); color: #fff; outline: 3px solid var(--primary); outline-offset: 2px; }
 
     /* Navigation Panel */
     .bottom-nav {
@@ -114,8 +113,9 @@
       display: flex; justify-content: space-around; padding: 10px;
       border: 1px solid rgba(255, 255, 255, 0.05); z-index: 5000;
     }
-    .nav-item { color: #52525b; text-decoration: none; text-align: center; flex: 1; transition: 0.3s; cursor: pointer; }
+    .nav-item { color: #52525b; text-decoration: none; text-align: center; flex: 1; transition: 0.3s; cursor: pointer; border-radius: 12px; padding: 4px; }
     .nav-item.active { color: var(--primary); transform: translateY(-3px); }
+    .nav-item.tv-focused { outline: 3px solid var(--primary); outline-offset: 2px; }
     .nav-item span { display: block; font-size: 0.65rem; font-weight: bold; margin-top: 2px; }
 
     .full-overlay {
@@ -124,6 +124,7 @@
       padding: 120px 20px 80px 20px; overflow-y: auto;
     }
     .history-card { display: flex; gap: 15px; background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 10px; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);}
+    .history-card.tv-focused { outline: 3px solid var(--primary); outline-offset: 2px; border-color: var(--primary); }
 
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 700; margin-top: 10px; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; }
 
@@ -132,21 +133,68 @@
     .modal-header { border-bottom: 1px solid #1f1f23; }
     .modal-footer { border-top: 1px solid #1f1f23; }
     .intent-btn { transition: 0.2s; padding: 12px; font-weight: bold; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .intent-btn.tv-focused { outline: 3px solid #fff; outline-offset: 2px; }
 
-    /* Video Player Screen Layout Fixed */
+    /* ===================== VIDEO PLAYER SCREEN (Remote / TV friendly) ===================== */
     #video-player-screen {
       position: fixed; inset: 0; background: #000000; z-index: 6500; display: none; flex-direction: column; justify-content: space-between; overflow: hidden;
     }
     #player-top-bar {
-      display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, #000, rgba(0,0,0,0.8), transparent); padding: 24px; position: absolute; top: 0; left: 0; width: 100%; z-index: 7500; transition: opacity 0.3s;
+      display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, #000, rgba(0,0,0,0.8), transparent); padding: 24px; position: absolute; top: 0; left: 0; width: 100%; z-index: 7500; transition: opacity 0.3s; pointer-events: none;
     }
+    #player-top-bar.ui-visible { pointer-events: auto; }
     .btn-close-player {
       padding: 8px 16px; border-radius: 12px; background: rgba(9,9,11,0.8); border: 1px solid #1f1f23; color: #fff; font-weight: bold; cursor: pointer; transition: 0.2s;
     }
+    .btn-close-player.tv-focused { outline: 3px solid var(--primary); border-color: var(--primary); }
 
-    /* Fluid Player OLED Hacker Overrides */
-    .fluid_video_wrapper { width: 100% !important; height: 100% !important; background-color: #000 !important; }
-    .fluid_controls_container { z-index: 7000 !important; }
+    #main-video-element { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+    /* Custom control bar - built for keyboard / D-pad / touch / mouse */
+    #player-bottom-bar {
+      position: absolute; left: 0; bottom: 0; width: 100%; z-index: 7500;
+      background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.6), transparent);
+      padding: 30px 24px 22px 24px; transition: opacity 0.3s, transform 0.3s; pointer-events: none;
+    }
+    #player-bottom-bar.ui-visible { pointer-events: auto; }
+
+    #seek-bar-wrapper {
+      width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+    }
+    #seek-time-current, #seek-time-total { font-family: monospace; font-size: 0.75rem; color: #d4d4d8; min-width: 42px; text-align: center; }
+    #seek-track {
+      flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 999px; position: relative; cursor: pointer; outline-offset: 6px;
+    }
+    #seek-track.tv-focused { outline: 3px solid var(--primary); }
+    #seek-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--primary); border-radius: 999px; width: 0%; }
+    #seek-thumb { position: absolute; top: 50%; width: 14px; height: 14px; background: #fff; border: 2px solid var(--primary); border-radius: 50%; transform: translate(-50%, -50%); left: 0%; transition: left 0.1s linear; }
+
+    #control-row { display: flex; align-items: center; justify-content: center; gap: 18px; }
+    .player-btn {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff;
+      width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; cursor: pointer; transition: 0.2s; flex-shrink: 0;
+    }
+    .player-btn:hover { background: rgba(239,68,68,0.2); border-color: var(--primary); }
+    .player-btn.tv-focused { outline: 3px solid var(--primary); outline-offset: 3px; background: rgba(239,68,68,0.25); border-color: var(--primary); }
+    #btn-play-pause { width: 64px; height: 64px; font-size: 1.5rem; background: var(--primary); border-color: var(--primary); }
+    #btn-play-pause:hover { background: #dc2626; }
+    #btn-play-pause.tv-focused { outline: 3px solid #fff; }
+
+    #player-center-feedback {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.6); border-radius: 50%; width: 90px; height: 90px;
+      display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff;
+      opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 7400;
+    }
+    #player-center-feedback.show { opacity: 1; }
+
+    #remote-hint {
+      text-align: center; font-size: 0.65rem; color: #71717a; margin-top: 10px; font-family: monospace; letter-spacing: 0.5px;
+    }
+
+    /* Fade overlay UI out when idle */
+    .ui-hidden { opacity: 0 !important; }
   </style>
 </head>
 <body>
@@ -236,16 +284,37 @@
       <button class="btn btn-outline-danger w-100 mt-4 rounded-pill" onclick="clearHistory()">Clear History</button>
   </div>
 
+  <!-- ===================== CUSTOM REMOTE-FRIENDLY VIDEO PLAYER ===================== -->
   <div id="video-player-screen">
-      <div id="player-top-bar">
+      <div id="player-top-bar" class="ui-visible">
           <div class="d-flex align-items-center gap-3">
-              <button class="btn-close-player" id="btn-close-player"><i class="fa-solid fa-arrow-left me-2"></i>CLOSE STREAM</button>
+              <button class="btn-close-player" id="btn-close-player" data-focusable="true"><i class="fa-solid fa-arrow-left me-2"></i>CLOSE STREAM</button>
               <span id="player-video-title" class="small text-uppercase tracking-wider fw-bold text-white text-truncate" style="max-width:250px;">Streaming Node</span>
           </div>
-          <div class="badge bg-danger font-monospace">FLUID PLAYER ENGINE</div>
+          <div class="badge bg-danger font-monospace">D-FLIX PLAYER</div>
       </div>
-      <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-          <video id="main-video-element" class="w-100 h-100" playsinline></video>
+
+      <div class="w-100 h-100 d-flex align-items-center justify-content-center" id="video-stage" style="position:relative;">
+          <video id="main-video-element" playsinline></video>
+          <div id="player-center-feedback"><i class="fa-solid fa-play"></i></div>
+      </div>
+
+      <div id="player-bottom-bar" class="ui-visible">
+          <div id="seek-bar-wrapper">
+              <span id="seek-time-current">00:00</span>
+              <div id="seek-track" data-focusable="true" tabindex="0">
+                  <div id="seek-fill"></div>
+                  <div id="seek-thumb"></div>
+              </div>
+              <span id="seek-time-total">00:00</span>
+          </div>
+          <div id="control-row">
+              <div class="player-btn" id="btn-rewind" data-focusable="true" tabindex="0"><i class="fa-solid fa-backward"></i></div>
+              <div class="player-btn" id="btn-play-pause" data-focusable="true" tabindex="0"><i class="fa-solid fa-play" id="play-pause-icon"></i></div>
+              <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
+              <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
+          </div>
+          <div id="remote-hint">◄ ► SEEK 10s &nbsp;&nbsp; ▲▼ MOVE &nbsp;&nbsp; OK/ENTER SELECT &nbsp;&nbsp; BACK CLOSE</div>
       </div>
   </div>
 
@@ -264,7 +333,6 @@
     const DROPBOX_REFRESH_TOKEN = 'PIEBZ5q2Q8IAAAAAAAAAAVVaGtI8BELQB3NTXTbSwNYjV8oWvieLLRedN72Y0HJl';
 
     let dbx;
-    let fluidInstance = null;
     let currentFolderHistory = [];
     let currentPath = "";
     let cachedEntries = [];
@@ -272,39 +340,314 @@
     let routingModalInstance;
     let activeItemSelection = null;
 
-    function initFluidCoreEngine(streamUrl) {
-        if (fluidInstance) {
-            fluidInstance.destroy();
-            fluidInstance = null;
+    /* =========================================================
+       REMOTE / D-PAD / KEYBOARD NAVIGATION ENGINE
+       Works for: TV remotes (arrow keys + Enter + Back/Escape),
+       physical keyboards (PC), and falls back gracefully to
+       touch/mouse on mobile. No focus trap, no external player
+       dependency - native <video> + custom controls only.
+       ========================================================= */
+    const TVNav = (() => {
+        let focusables = [];
+        let currentIndex = -1;
+        let active = false;
+
+        function isVisible(el) {
+            if (!el) return false;
+            const style = window.getComputedStyle(el);
+            if (style.display === 'none' || style.visibility === 'hidden') return false;
+            const rect = el.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0;
         }
 
-        const videoEl = document.getElementById('main-video-element');
-        videoEl.innerHTML = `<source src="${streamUrl}" type="video/mp4" />`;
+        function refresh(containerSelector) {
+            const container = containerSelector ? document.querySelector(containerSelector) : document;
+            focusables = Array.from(container.querySelectorAll('[data-focusable="true"], .m-card, .nav-item, .intent-btn'))
+                .filter(isVisible);
+            currentIndex = focusables.length ? 0 : -1;
+            applyFocus();
+        }
 
-        fluidInstance = fluidPlayer('main-video-element', {
-            layoutControls: {
-                primaryColor: "#ef4444",
-                posterImage: "",
-                autoPlay: true,
-                playButtonShowing: true,
-                playPauseAnimation: true,
-                allowDownload: false,
-                playbackRateEnabled: true,
-                allowTheatre: false,
-                logo: { imageUrl: '', clickUrl: '', position: 'top left' },
-                controlBar: { autoHide: true, autoHideTimeout: 3 }
+        function applyFocus() {
+            focusables.forEach(el => el.classList.remove('tv-focused'));
+            if (currentIndex >= 0 && focusables[currentIndex]) {
+                const el = focusables[currentIndex];
+                el.classList.add('tv-focused');
+                el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                el.focus({ preventScroll: true });
             }
-        });
+        }
 
-        const topBar = document.getElementById('player-top-bar');
-        videoEl.addEventListener('play', () => setTimeout(() => topBar.style.opacity = '0', 2000));
-        videoEl.addEventListener('pause', () => topBar.style.opacity = '1');
-        videoEl.addEventListener('mousemove', () => {
-            topBar.style.opacity = '1';
-            clearTimeout(videoEl.hoverTimeout);
-            videoEl.hoverTimeout = setTimeout(() => { if(!videoEl.paused) topBar.style.opacity = '0'; }, 3000);
-        });
+        // Spatial navigation: find nearest element in a given direction
+        function moveDirection(dir) {
+            if (!focusables.length || currentIndex < 0) return;
+            const cur = focusables[currentIndex].getBoundingClientRect();
+            const curCenter = { x: cur.left + cur.width / 2, y: cur.top + cur.height / 2 };
+
+            let best = null, bestScore = Infinity;
+            focusables.forEach((el, i) => {
+                if (i === currentIndex) return;
+                const r = el.getBoundingClientRect();
+                const c = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+                const dx = c.x - curCenter.x, dy = c.y - curCenter.y;
+
+                let valid = false, primary = 0, secondary = 0;
+                if (dir === 'right' && dx > 5) { valid = true; primary = dx; secondary = Math.abs(dy); }
+                if (dir === 'left' && dx < -5) { valid = true; primary = -dx; secondary = Math.abs(dy); }
+                if (dir === 'down' && dy > 5) { valid = true; primary = dy; secondary = Math.abs(dx); }
+                if (dir === 'up' && dy < -5) { valid = true; primary = -dy; secondary = Math.abs(dx); }
+
+                if (valid) {
+                    const score = primary + secondary * 1.5;
+                    if (score < bestScore) { bestScore = score; best = i; }
+                }
+            });
+
+            if (best !== null) { currentIndex = best; applyFocus(); }
+        }
+
+        function activateCurrent() {
+            if (currentIndex >= 0 && focusables[currentIndex]) {
+                focusables[currentIndex].click();
+            }
+        }
+
+        function setScope(containerSelector) {
+            active = true;
+            refresh(containerSelector);
+        }
+
+        function clearScope() {
+            active = false;
+            focusables.forEach(el => el.classList.remove('tv-focused'));
+            focusables = [];
+            currentIndex = -1;
+        }
+
+        function isActive() { return active; }
+
+        function getCurrentEl() {
+            return (currentIndex >= 0) ? focusables[currentIndex] : null;
+        }
+
+        return { refresh, moveDirection, activateCurrent, setScope, clearScope, isActive, getCurrentEl };
+    })();
+
+    // Global key handler - works for TV remotes mapped to arrow keys + Enter + Backspace/Escape,
+    // and for keyboards on PC. Mobile/touch users simply tap (unaffected by this).
+    document.addEventListener('keydown', (e) => {
+        const playerOpen = document.getElementById('video-player-screen').style.display === 'flex';
+
+        if (playerOpen) {
+            handlePlayerKeydown(e);
+            return;
+        }
+
+        if (!TVNav.isActive()) return;
+
+        switch (e.key) {
+            case 'ArrowUp': e.preventDefault(); TVNav.moveDirection('up'); break;
+            case 'ArrowDown': e.preventDefault(); TVNav.moveDirection('down'); break;
+            case 'ArrowLeft': e.preventDefault(); TVNav.moveDirection('left'); break;
+            case 'ArrowRight': e.preventDefault(); TVNav.moveDirection('right'); break;
+            case 'Enter': e.preventDefault(); TVNav.activateCurrent(); break;
+            case 'Backspace':
+            case 'Escape':
+                e.preventDefault();
+                if (document.getElementById('fullListView').style.display === 'block' ||
+                    document.getElementById('settingsOverlay').style.display === 'block' ||
+                    document.getElementById('historyOverlay').style.display === 'block') {
+                    showHome();
+                }
+                break;
+        }
+    });
+
+    /* =========================================================
+       VIDEO PLAYER - native HTML5 video + custom control bar
+       ========================================================= */
+    const videoEl = document.getElementById('main-video-element');
+    const playPauseIcon = document.getElementById('play-pause-icon');
+    const muteIcon = document.getElementById('mute-icon');
+    const seekFill = document.getElementById('seek-fill');
+    const seekThumb = document.getElementById('seek-thumb');
+    const seekTrack = document.getElementById('seek-track');
+    const seekCurrentLabel = document.getElementById('seek-time-current');
+    const seekTotalLabel = document.getElementById('seek-time-total');
+    const centerFeedback = document.getElementById('player-center-feedback');
+    const topBar = document.getElementById('player-top-bar');
+    const bottomBar = document.getElementById('player-bottom-bar');
+
+    let controlsHideTimer = null;
+
+    function formatTime(seconds) {
+        if (!isFinite(seconds) || isNaN(seconds)) return "00:00";
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        const pad = (n) => String(n).padStart(2, '0');
+        return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
     }
+
+    function showControls() {
+        topBar.classList.add('ui-visible');
+        bottomBar.classList.add('ui-visible');
+        topBar.classList.remove('ui-hidden');
+        bottomBar.classList.remove('ui-hidden');
+        clearTimeout(controlsHideTimer);
+        controlsHideTimer = setTimeout(() => {
+            if (!videoEl.paused) {
+                topBar.classList.add('ui-hidden');
+                bottomBar.classList.add('ui-hidden');
+            }
+        }, 4000);
+    }
+
+    function showCenterFeedback(iconClass) {
+        centerFeedback.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+        centerFeedback.classList.add('show');
+        setTimeout(() => centerFeedback.classList.remove('show'), 500);
+    }
+
+    function togglePlayPause() {
+        if (videoEl.paused) {
+            videoEl.play();
+        } else {
+            videoEl.pause();
+        }
+        showControls();
+    }
+
+    function seekBy(deltaSeconds) {
+        videoEl.currentTime = Math.max(0, Math.min(videoEl.duration || 0, videoEl.currentTime + deltaSeconds));
+        showCenterFeedback(deltaSeconds > 0 ? 'fa-forward' : 'fa-backward');
+        showControls();
+    }
+
+    function toggleMute() {
+        videoEl.muted = !videoEl.muted;
+        muteIcon.className = videoEl.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+        showControls();
+    }
+
+    videoEl.addEventListener('play', () => {
+        playPauseIcon.className = 'fa-solid fa-pause';
+        showCenterFeedback('fa-play');
+        showControls();
+    });
+    videoEl.addEventListener('pause', () => {
+        playPauseIcon.className = 'fa-solid fa-play';
+        showCenterFeedback('fa-pause');
+        topBar.classList.remove('ui-hidden');
+        bottomBar.classList.remove('ui-hidden');
+        clearTimeout(controlsHideTimer);
+    });
+    videoEl.addEventListener('timeupdate', () => {
+        if (videoEl.duration) {
+            const pct = (videoEl.currentTime / videoEl.duration) * 100;
+            seekFill.style.width = pct + '%';
+            seekThumb.style.left = pct + '%';
+        }
+        seekCurrentLabel.innerText = formatTime(videoEl.currentTime);
+    });
+    videoEl.addEventListener('loadedmetadata', () => {
+        seekTotalLabel.innerText = formatTime(videoEl.duration);
+    });
+
+    document.getElementById('btn-play-pause').addEventListener('click', togglePlayPause);
+    document.getElementById('btn-rewind').addEventListener('click', () => seekBy(-10));
+    document.getElementById('btn-forward').addEventListener('click', () => seekBy(10));
+    document.getElementById('btn-mute').addEventListener('click', toggleMute);
+
+    // Click-to-seek on the track (mouse/touch)
+    seekTrack.addEventListener('click', (e) => {
+        const rect = seekTrack.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        if (videoEl.duration) videoEl.currentTime = pct * videoEl.duration;
+        showControls();
+    });
+
+    // Mouse movement / touch reveals controls on the player stage
+    document.getElementById('video-stage').addEventListener('mousemove', showControls);
+    document.getElementById('video-stage').addEventListener('click', showControls);
+
+    // Player-specific keydown handling (active only while player is open).
+    // ArrowLeft/Right seek +/-10s when seek-track is focused, or move focus otherwise;
+    // ArrowUp/Down move focus between bottom-bar controls and top-bar close button.
+    const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'seek-track'];
+    let playerFocusIndex = 2; // start on play/pause
+
+    function applyPlayerFocus() {
+        playerFocusOrder.forEach(id => document.getElementById(id).classList.remove('tv-focused'));
+        const el = document.getElementById(playerFocusOrder[playerFocusIndex]);
+        el.classList.add('tv-focused');
+        el.focus({ preventScroll: true });
+        showControls();
+    }
+
+    function handlePlayerKeydown(e) {
+        const focusedIsTrack = playerFocusOrder[playerFocusIndex] === 'seek-track';
+
+        switch (e.key) {
+            case 'ArrowLeft':
+                e.preventDefault();
+                if (focusedIsTrack) { seekBy(-10); }
+                else { playerFocusIndex = (playerFocusIndex - 1 + playerFocusOrder.length) % playerFocusOrder.length; applyPlayerFocus(); }
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                if (focusedIsTrack) { seekBy(10); }
+                else { playerFocusIndex = (playerFocusIndex + 1) % playerFocusOrder.length; applyPlayerFocus(); }
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                if (playerFocusIndex === 0) { playerFocusIndex = 2; }
+                else { playerFocusIndex = playerFocusOrder.length - 1; } // jump to seek track
+                applyPlayerFocus();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                if (focusedIsTrack) { playerFocusIndex = 2; }
+                else { playerFocusIndex = 0; } // jump to close button
+                applyPlayerFocus();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                document.getElementById(playerFocusOrder[playerFocusIndex]).click();
+                break;
+            case ' ':
+                e.preventDefault();
+                togglePlayPause();
+                break;
+            case 'Backspace':
+            case 'Escape':
+                e.preventDefault();
+                closePlayer();
+                break;
+        }
+    }
+
+    function closePlayer() {
+        videoEl.pause();
+        videoEl.removeAttribute('src');
+        videoEl.load();
+        document.getElementById('video-player-screen').style.display = 'none';
+        TVNav.setScope('#homePage, #fullListView, #settingsOverlay, #historyOverlay, .bottom-nav');
+    }
+
+    document.getElementById('btn-close-player').addEventListener('click', closePlayer);
+
+    function openPlayer(streamUrl, title) {
+        document.getElementById('player-video-title').innerText = title;
+        videoEl.src = streamUrl;
+        document.getElementById('video-player-screen').style.display = 'flex';
+        playerFocusIndex = 2;
+        applyPlayerFocus();
+        videoEl.play().catch(() => {});
+        TVNav.clearScope();
+    }
+
+    /* ========================================================= */
 
     async function fetchFreshAccessToken() {
         try {
@@ -350,6 +693,8 @@
                 executeAndroidAppIntent(activeItemSelection);
             }
         });
+
+        TVNav.setScope('#homePage, .bottom-nav');
     });
 
     function fetchDropboxFiles(path) {
@@ -387,6 +732,7 @@
 
             const card = document.createElement('div');
             card.className = "m-card";
+            card.setAttribute('tabindex', '0');
             
             if (isFolder) {
                 card.onclick = () => {
@@ -409,12 +755,15 @@
             }
             targetGrid.appendChild(card);
         });
+
+        if (TVNav.isActive()) TVNav.refresh('#homePage, .bottom-nav');
     }
 
     function triggerPlaybackSelection(item) {
         activeItemSelection = item;
         document.getElementById('routingModalTitle').innerText = item.name;
         routingModalInstance.show();
+        setTimeout(() => TVNav.setScope('#playbackRoutingModal'), 150);
     }
 
     function executeWebStreaming(item) {
@@ -425,11 +774,7 @@
                     rawLink = rawLink.replace("www.dropbox.com", "dl.dropboxusercontent.com");
                 }
                 let cleanUrl = rawLink.split('?')[0] + "?raw=1";
-
-                document.getElementById('player-video-title').innerText = item.name;
-                document.getElementById('video-player-screen').style.display = 'flex';
-                
-                initFluidCoreEngine(cleanUrl);
+                openPlayer(cleanUrl, item.name);
             }).catch(() => alert("Error processing temporary token stream link."));
     }
 
@@ -467,6 +812,7 @@
                 const isFolder = item[".tag"] === "folder";
                 const card = document.createElement('div');
                 card.className = "m-card";
+                card.setAttribute('tabindex', '0');
                 if(isFolder) {
                     card.onclick = () => { closeAll(); currentFolderHistory.push(currentPath); fetchDropboxFiles(item.path_lower); showHome(); };
                     card.innerHTML = `<div class="icon-box-preview text-warning"><i class="fa-solid fa-folder-open"></i></div><div class="m-content">${item.name}</div>`;
@@ -482,6 +828,8 @@
 
         if(typeFilter === 'video') setActive('btnM');
         else setActive('btnS');
+
+        TVNav.setScope('#fullListView, .bottom-nav');
     };
 
     window.showHome = () => {
@@ -489,12 +837,14 @@
         document.getElementById('homePage').style.display = 'block';
         setActive('btnH');
         processAndRenderUI(cachedEntries);
+        TVNav.setScope('#homePage, .bottom-nav');
     };
 
     window.toggleSettings = () => {
         closeAll();
         document.getElementById('settingsOverlay').style.display = 'block';
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        TVNav.setScope('#settingsOverlay');
     };
 
     window.showHistory = () => {
@@ -505,10 +855,12 @@
         history.forEach(m => {
             const hDiv = document.createElement('div');
             hDiv.className = "history-card";
+            hDiv.setAttribute('tabindex', '0');
             hDiv.onclick = () => triggerPlaybackSelection(m);
             hDiv.innerHTML = `<i class="fa-solid fa-circle-play text-danger fa-xl me-2"></i><div><b class="text-xs">${m.name}</b></div><i class="fa-solid fa-play-circle ms-auto text-danger fa-lg"></i>`;
             list.appendChild(hDiv);
         });
+        TVNav.setScope('#historyOverlay');
     };
 
     function saveHistory(item) {
@@ -532,14 +884,6 @@
         const target = document.getElementById(id);
         if(target) target.classList.add('active');
     }
-
-    document.getElementById('btn-close-player').addEventListener('click', () => {
-        if (fluidInstance) {
-            const videoEl = document.getElementById('main-video-element');
-            videoEl.pause();
-        }
-        document.getElementById('video-player-screen').style.display = 'none';
-    });
 
     window.onpopstate = () => showHome();
   </script>
