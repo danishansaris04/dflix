@@ -437,9 +437,28 @@
     // and for keyboards on PC. Mobile/touch users simply tap (unaffected by this).
     document.addEventListener('keydown', (e) => {
         const playerOpen = document.getElementById('video-player-screen').style.display === 'flex';
+        const modalEl = document.getElementById('playbackRoutingModal');
+        const modalOpen = modalEl.classList.contains('show');
 
         if (playerOpen) {
             handlePlayerKeydown(e);
+            return;
+        }
+
+        // Modal takes priority over whatever screen is behind it.
+        if (modalOpen) {
+            switch (e.key) {
+                case 'ArrowUp': e.preventDefault(); TVNav.moveDirection('up'); break;
+                case 'ArrowDown': e.preventDefault(); TVNav.moveDirection('down'); break;
+                case 'ArrowLeft': e.preventDefault(); TVNav.moveDirection('left'); break;
+                case 'ArrowRight': e.preventDefault(); TVNav.moveDirection('right'); break;
+                case 'Enter': e.preventDefault(); TVNav.activateCurrent(); break;
+                case 'Backspace':
+                case 'Escape':
+                    e.preventDefault();
+                    routingModalInstance.hide();
+                    break;
+            }
             return;
         }
 
@@ -763,8 +782,22 @@
         activeItemSelection = item;
         document.getElementById('routingModalTitle').innerText = item.name;
         routingModalInstance.show();
-        setTimeout(() => TVNav.setScope('#playbackRoutingModal'), 150);
     }
+
+    // Bootstrap fires this once the modal is fully shown and its own focus
+    // handling has settled - this is the reliable moment to hand control to TVNav.
+    document.getElementById('playbackRoutingModal').addEventListener('shown.bs.modal', () => {
+        TVNav.setScope('#playbackRoutingModal');
+    });
+
+    // When the modal closes (X button, backdrop click, Escape via Bootstrap),
+    // hand control back to whichever screen is visible.
+    document.getElementById('playbackRoutingModal').addEventListener('hidden.bs.modal', () => {
+        if (document.getElementById('video-player-screen').style.display === 'flex') return;
+        if (document.getElementById('fullListView').style.display === 'block') { TVNav.setScope('#fullListView, .bottom-nav'); return; }
+        if (document.getElementById('historyOverlay').style.display === 'block') { TVNav.setScope('#historyOverlay'); return; }
+        TVNav.setScope('#homePage, .bottom-nav');
+    });
 
     function executeWebStreaming(item) {
         dbx.filesGetTemporaryLink({ path: item.path_lower })
