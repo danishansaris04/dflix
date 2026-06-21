@@ -284,7 +284,6 @@
       <button class="btn btn-outline-danger w-100 mt-4 rounded-pill" onclick="clearHistory()">Clear History</button>
   </div>
 
-  <!-- ===================== CUSTOM REMOTE-FRIENDLY VIDEO PLAYER ===================== -->
   <div id="video-player-screen">
       <div id="player-top-bar" class="ui-visible">
           <div class="d-flex align-items-center gap-3">
@@ -300,17 +299,17 @@
       </div>
 
       <div id="player-bottom-bar" class="ui-visible">
-          <!-- 1. CONTROL BUTTON ROW -->
           <div id="control-row">
               <div class="player-btn" id="btn-rewind" data-focusable="true" tabindex="0"><i class="fa-solid fa-backward"></i></div>
               <div class="player-btn" id="btn-play-pause" data-focusable="true" tabindex="0"><i class="fa-solid fa-play" id="play-pause-icon"></i></div>
               <div class="player-btn" id="btn-forward" data-focusable="true" tabindex="0"><i class="fa-solid fa-forward"></i></div>
               <div class="player-btn" id="btn-mute" data-focusable="true" tabindex="0"><i class="fa-solid fa-volume-high" id="mute-icon"></i></div>
-              <!-- FULLSCREEN OPTION ADDED HERE -->
+              
+              <div class="player-btn" id="btn-download" data-focusable="true" tabindex="0" title="Download File"><i class="fa-solid fa-download"></i></div>
+              
               <div class="player-btn" id="btn-fullscreen" data-focusable="true" tabindex="0"><i class="fa-solid fa-expand" id="fullscreen-icon"></i></div>
           </div>
 
-          <!-- 2. SEEK BAR -->
           <div id="seek-bar-wrapper">
               <span id="seek-time-current">00:00</span>
               <div id="seek-track" data-focusable="true" tabindex="0">
@@ -547,7 +546,6 @@
 
     function toggleFullscreen() {
         if (!document.fullscreenElement) {
-            // Pure Player Screen wrapper container ko full screen karenge, taaki custom UI preserve rahe
             playerScreen.requestFullscreen().then(() => {
                 fullscreenIcon.className = 'fa-solid fa-compress';
             }).catch(err => {
@@ -561,7 +559,6 @@
         showControls();
     }
 
-    // Full screen change handle logic manually browser crash check ke liye
     document.addEventListener('fullscreenchange', () => {
         if (!document.fullscreenElement) {
             fullscreenIcon.className = 'fa-solid fa-expand';
@@ -611,8 +608,8 @@
     /* =========================================================
        DYNAMIC STRUCTURAL ADJUSTED KEYBOARD NAVIGATION MAP
        ========================================================= */
-    // Added 'btn-fullscreen' in the control row focus chain mapping array
-    const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'btn-fullscreen', 'seek-track'];
+    // 'btn-download' added sequentially in focus indexing chain parameters
+    const playerFocusOrder = ['btn-close-player', 'btn-rewind', 'btn-play-pause', 'btn-forward', 'btn-mute', 'btn-download', 'btn-fullscreen', 'seek-track'];
     let playerFocusIndex = 2; // Starts tracking perfectly on centered Play/Pause button node
 
     function applyPlayerFocus() {
@@ -630,36 +627,34 @@
             case 'ArrowLeft':
                 e.preventDefault();
                 if (focusedIsTrack) { 
-                    seekBy(-60); // Jumps instantly by 1 Minute when timeline bar is focused!
+                    seekBy(-60); 
                 } else { 
-                    // Move left inside the lower control grid buttons (Index 1 to 5)
-                    if(playerFocusIndex > 1 && playerFocusIndex < 6) { playerFocusIndex--; applyPlayerFocus(); }
+                    if(playerFocusIndex > 1 && playerFocusIndex < 7) { playerFocusIndex--; applyPlayerFocus(); }
                 }
                 break;
             case 'ArrowRight':
                 e.preventDefault();
                 if (focusedIsTrack) { 
-                    seekBy(60); // Jumps instantly by 1 Minute when timeline bar is focused!
+                    seekBy(60); 
                 } else { 
-                    // Move right inside the lower control grid buttons
-                    if(playerFocusIndex >= 1 && playerFocusIndex < 5) { playerFocusIndex++; applyPlayerFocus(); }
+                    if(playerFocusIndex >= 1 && playerFocusIndex < 6) { playerFocusIndex++; applyPlayerFocus(); }
                 }
                 break;
             case 'ArrowDown':
                 e.preventDefault();
                 if (playerFocusIndex === 0) { 
-                    playerFocusIndex = 2; // From top Close Stream button, down to Play/Pause button
-                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 5) { 
-                    playerFocusIndex = 6; // From any button row node, down to the timeline seek-track
+                    playerFocusIndex = 2; 
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 6) { 
+                    playerFocusIndex = 7; 
                 }
                 applyPlayerFocus();
                 break;
             case 'ArrowUp':
                 e.preventDefault();
                 if (focusedIsTrack) { 
-                    playerFocusIndex = 2; // From lower seek bar track, up to Play/Pause button row
-                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 5) { 
-                    playerFocusIndex = 0; // From button row, up to top Close Stream button
+                    playerFocusIndex = 2; 
+                } else if (playerFocusIndex >= 1 && playerFocusIndex <= 6) { 
+                    playerFocusIndex = 0; 
                 }
                 applyPlayerFocus();
                 break;
@@ -696,7 +691,7 @@
         document.getElementById('player-video-title').innerText = title;
         videoEl.src = streamUrl;
         document.getElementById('video-player-screen').style.display = 'flex';
-        playerFocusIndex = 2; // Focus Play/Pause on startup
+        playerFocusIndex = 2; 
         applyPlayerFocus();
         videoEl.play().catch(() => {});
         TVNav.clearScope();
@@ -716,6 +711,29 @@
             return data.access_token || null;
         } catch (error) { return null; }
     }
+
+    // Direct File Download Logic
+    function downloadCurrentVideo() {
+        if (activeItemSelection) {
+            dbx.filesGetTemporaryLink({ path: activeItemSelection.path_lower })
+                .then((res) => {
+                    let rawLink = res.result.link;
+                    if (rawLink.includes("www.dropbox.com")) {
+                        rawLink = rawLink.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+                    }
+                    let downloadUrl = rawLink.split('?')[0] + "?raw=1";
+                    
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.setAttribute('download', activeItemSelection.name);
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }).catch(() => alert("Error generating token download matrix link."));
+        }
+    }
+
+    document.getElementById('btn-download').addEventListener('click', downloadCurrentVideo);
 
     document.addEventListener("DOMContentLoaded", async () => {
         routingModalInstance = new bootstrap.Modal(document.getElementById('playbackRoutingModal'));
@@ -954,4 +972,4 @@
     window.onpopstate = () => showHome();
   </script>
 </body>
-                                                                                               </html>
+</html>
